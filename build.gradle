@@ -3,6 +3,7 @@ buildscript {
         compose_version = '1.3.0'
         accompanist_version = '0.23.1'
         kotlin_version = '1.7.10'
+        retrofit_version = '2.9.0'
     }
     repositories {
         google()
