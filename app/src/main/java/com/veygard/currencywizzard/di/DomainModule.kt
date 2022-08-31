@@ -4,6 +4,7 @@ import com.veygard.currencywizzard.data.network.CurrenciesApi
 import com.veygard.currencywizzard.domain.repository.CurrenciesRepository
 import com.veygard.currencywizzard.domain.repository.CurrenciesRepositoryImpl
 import com.veygard.currencywizzard.domain.usecase.CurrenciesUseCases
+import com.veygard.currencywizzard.domain.usecase.FetchAllUseCase
 import com.veygard.currencywizzard.domain.usecase.FetchMultiUseCase
 import dagger.Module
 import dagger.Provides
@@ -27,6 +28,7 @@ object DomainModule {
     fun provideCurrenciesUseCases(
         currenciesRepository: CurrenciesRepository,
     ): CurrenciesUseCases = CurrenciesUseCases(
-        fetchMultiUseCase = FetchMultiUseCase(currenciesRepository)
+        fetchMultiUseCase = FetchMultiUseCase(currenciesRepository),
+        fetchAllUseCase = FetchAllUseCase(currenciesRepository)
     )
 }
