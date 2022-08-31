@@ -25,9 +25,6 @@ class CurrenciesRepositoryImpl(private val currenciesApi: CurrenciesApi) : Curre
             call.isSuccessful -> {
                 call.body()?.let {
                     val map = mutableMapOf<String, String>()
-                    for (prop in Results::class.members) {
-                        map.put(prop.)
-                    }
                     CurrenciesRepoResponse.SuccessFetch(FetchApiResponse())
                 } ?: CurrenciesRepoResponse.Error
             }
