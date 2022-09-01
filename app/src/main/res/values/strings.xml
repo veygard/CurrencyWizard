@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CurrencyWizzard</string>
+    <string name="something_wrong_title">Что то пошло не так</string>
+    <string name="timeout_title">Отсутствует подключение к интернет, или сервер временно недоступен</string>
+    <string name="something_wrong_text">Попробуйте повторить чуть позже, или свяжитесь с технической поддержкой.</string>
+    <string name="something_wrong_tile">Что-то пошло не так</string>
 </resources>

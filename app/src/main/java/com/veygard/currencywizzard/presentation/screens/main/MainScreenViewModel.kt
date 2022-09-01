@@ -1,8 +1,7 @@
-package com.veygard.currencywizzard.presentation.viewmodel
+package com.veygard.currencywizzard.presentation.screens.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.veygard.currencywizzard.data.network.model.currencies.Currency
 import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizzard.domain.network.response.CurrenciesConvertRepoResponse
 import com.veygard.currencywizzard.domain.network.response.CurrenciesFetchRepoResponse
@@ -10,58 +9,61 @@ import com.veygard.currencywizzard.domain.network.response.CurrenciesGetAllRepoR
 import com.veygard.currencywizzard.domain.network.usecase.CurrenciesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CurrenciesViewModel  @Inject constructor(
+class MainScreenViewModel @Inject constructor(
     private val currenciesUseCases: CurrenciesUseCases,
     private val localCurrenciesRepository: LocalCurrenciesRepository
-) : ViewModel(){
+) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow<List<Currency>?>(null)
-    val stateFlow = _stateFlow.asStateFlow()
+    private val _stateFlow = MutableStateFlow<MainScreenState?>(null)
+    val stateFlow: StateFlow<MainScreenState?> = _stateFlow
 
     init {
-        fetchAll()
-        fetchMulti("usd", listOf("eur","gbp"))
         getAllCurrencies()
-        convert(to="rub", from = "usd", amount = 1.65)
     }
 
-    fun fetchAll(from: String = "USD"){
+    fun fetchAll(from: String = "USD") {
         viewModelScope.launch {
-            val result  = currenciesUseCases.fetchAllUseCase.execute(from)
-            when(result){
+            val result = currenciesUseCases.fetchAllUseCase.execute(from)
+            when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.value = result.fetch.results
                 }
                 else -> {}
             }
         }
     }
 
-    fun fetchMulti(from:String, currencyList: List<String>){
+    fun fetchMulti(from: String, currencyList: List<String>) {
         viewModelScope.launch {
             val to = currencyList.joinToString(separator = ",")
-            val result  = currenciesUseCases.fetchMultiUseCase.execute(from,to)
-            when(result){
+            val result = currenciesUseCases.fetchMultiUseCase.execute(from, to)
+            when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.value = result.fetch.results
                 }
                 else -> {}
             }
         }
     }
 
-    fun getAllCurrencies(){
+    fun getAllCurrencies() {
         viewModelScope.launch {
-            val result  = currenciesUseCases.getAllCurrenciesUseCase.execute()
-            when(result){
-                is CurrenciesGetAllRepoResponse.SuccessGetAll  -> {
+            _stateFlow.update { MainScreenState.Loading }
+            val result = currenciesUseCases.getAllCurrenciesUseCase.execute()
+            when (result) {
+                is CurrenciesGetAllRepoResponse.SuccessGetAll -> {
+                    _stateFlow.update {
+                        result.getAll.currencies?.let { list ->
+                            MainScreenState.CurrencyListReady(list)
+                        } ?: MainScreenState.ListError
+                    }
                 }
-                else  -> {}
+                CurrenciesGetAllRepoResponse.Error -> _stateFlow.update { MainScreenState.ConnectionError }
             }
         }
     }
@@ -69,8 +71,8 @@ class CurrenciesViewModel  @Inject constructor(
     fun convert(from: String, to: String, amount: Double) {
         viewModelScope.launch {
             val result = currenciesUseCases.convertCurrencyUseCase.execute(from, to, amount)
-            when(result){
-                is CurrenciesConvertRepoResponse.SuccessConvert ->{
+            when (result) {
+                is CurrenciesConvertRepoResponse.SuccessConvert -> {
                 }
             }
         }
