@@ -4,6 +4,8 @@ buildscript {
         accompanist_version = '0.23.1'
         kotlin_version = '1.7.10'
         retrofit_version = '2.9.0'
+        room_version = "2.4.3"
+        moshi_version = "1.13.0"
     }
     repositories {
         google()
