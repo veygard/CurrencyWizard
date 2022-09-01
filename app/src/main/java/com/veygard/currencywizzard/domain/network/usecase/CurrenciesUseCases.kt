@@ -1,4 +1,4 @@
-package com.veygard.currencywizzard.domain.usecase
+package com.veygard.currencywizzard.domain.network.usecase
 
 data class CurrenciesUseCases(
     val fetchMultiUseCase: FetchMultiUseCase,

@@ -14,5 +14,5 @@ data class CurrencyEntity(
     var isFavorite: Boolean
 ) : Parcelable
 
-fun Currency.toEntity(isFavorite: Boolean) =
-    CurrencyEntity(abbreviation = name, descriptionName = value, isFavorite = isFavorite)
+
+

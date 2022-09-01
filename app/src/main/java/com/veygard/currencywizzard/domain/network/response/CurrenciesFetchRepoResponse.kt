@@ -1,9 +1,8 @@
-package com.veygard.currencywizzard.domain.response
+package com.veygard.currencywizzard.domain.network.response
 
 import com.veygard.currencywizzard.data.network.model.currencies.convert.CurrenciesConvertApiResponse
 import com.veygard.currencywizzard.data.network.model.currencies.fetch.FetchApiResponse
 import com.veygard.currencywizzard.data.network.model.currencies.getall.GetAllApiResponse
-import java.util.*
 
 interface CurrenciesRepoResponse
 

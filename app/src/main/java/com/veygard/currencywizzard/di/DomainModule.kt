@@ -1,11 +1,14 @@
 package com.veygard.currencywizzard.di
 
+import com.veygard.currencywizzard.data.local.CurrenciesDao
 import com.veygard.currencywizzard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
-import com.veygard.currencywizzard.domain.repository.CurrenciesRepository
-import com.veygard.currencywizzard.domain.repository.CurrenciesRepositoryImpl
-import com.veygard.currencywizzard.domain.usecase.*
+import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
+import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepositoryImpl
+import com.veygard.currencywizzard.domain.network.repository.CurrenciesRepository
+import com.veygard.currencywizzard.domain.network.repository.CurrenciesRepositoryImpl
+import com.veygard.currencywizzard.domain.network.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,8 +25,14 @@ object DomainModule {
     fun provideCurrenciesRepository(
         currenciesFetchApi: CurrenciesFetchApi,
         currenciesGetAllApi: CurrenciesGetAllApi,
-        currenciesConvertApi: CurrenciesConvertApi
-    ): CurrenciesRepository = CurrenciesRepositoryImpl(currenciesFetchApi, currenciesGetAllApi, currenciesConvertApi)
+        currenciesConvertApi: CurrenciesConvertApi,
+        localCurrenciesRepository: LocalCurrenciesRepository
+    ): CurrenciesRepository = CurrenciesRepositoryImpl(
+        currenciesFetchApi,
+        currenciesGetAllApi,
+        currenciesConvertApi,
+        localCurrenciesRepository
+    )
 
     @Provides
     @Singleton
@@ -35,4 +44,10 @@ object DomainModule {
         convertCurrencyUseCase = ConvertCurrencyUseCase((currenciesRepository)),
         getAllCurrenciesUseCase = GetAllCurrenciesUseCase(currenciesRepository)
     )
+
+    @Provides
+    @Singleton
+    fun provideLocalDbRepository(
+        currenciesDao: CurrenciesDao
+    ): LocalCurrenciesRepository = LocalCurrenciesRepositoryImpl(currenciesDao)
 }

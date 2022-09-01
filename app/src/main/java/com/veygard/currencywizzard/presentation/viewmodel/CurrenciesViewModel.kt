@@ -3,10 +3,10 @@ package com.veygard.currencywizzard.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.veygard.currencywizzard.data.network.model.currencies.Currency
-import com.veygard.currencywizzard.domain.response.CurrenciesConvertRepoResponse
-import com.veygard.currencywizzard.domain.response.CurrenciesFetchRepoResponse
-import com.veygard.currencywizzard.domain.response.CurrenciesGetAllRepoResponse
-import com.veygard.currencywizzard.domain.usecase.CurrenciesUseCases
+import com.veygard.currencywizzard.domain.network.response.CurrenciesConvertRepoResponse
+import com.veygard.currencywizzard.domain.network.response.CurrenciesFetchRepoResponse
+import com.veygard.currencywizzard.domain.network.response.CurrenciesGetAllRepoResponse
+import com.veygard.currencywizzard.domain.network.usecase.CurrenciesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

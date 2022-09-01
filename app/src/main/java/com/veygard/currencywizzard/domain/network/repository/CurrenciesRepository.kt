@@ -1,7 +1,6 @@
-package com.veygard.currencywizzard.domain.repository
+package com.veygard.currencywizzard.domain.network.repository
 
-import com.veygard.currencywizzard.domain.response.CurrenciesFetchRepoResponse
-import com.veygard.currencywizzard.domain.response.CurrenciesRepoResponse
+import com.veygard.currencywizzard.domain.network.response.CurrenciesRepoResponse
 
 interface CurrenciesRepository {
     suspend fun fetchAll(from:String): CurrenciesRepoResponse

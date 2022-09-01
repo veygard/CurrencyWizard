@@ -1,17 +1,20 @@
-package com.veygard.currencywizzard.domain.repository
+package com.veygard.currencywizzard.domain.network.repository
 
 import com.veygard.currencywizzard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
-import com.veygard.currencywizzard.domain.response.CurrenciesConvertRepoResponse
-import com.veygard.currencywizzard.domain.response.CurrenciesFetchRepoResponse
-import com.veygard.currencywizzard.domain.response.CurrenciesGetAllRepoResponse
-import com.veygard.currencywizzard.domain.response.CurrenciesRepoResponse
+import com.veygard.currencywizzard.data.network.model.currencies.toEntityList
+import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
+import com.veygard.currencywizzard.domain.network.response.CurrenciesConvertRepoResponse
+import com.veygard.currencywizzard.domain.network.response.CurrenciesFetchRepoResponse
+import com.veygard.currencywizzard.domain.network.response.CurrenciesGetAllRepoResponse
+import com.veygard.currencywizzard.domain.network.response.CurrenciesRepoResponse
 
 class CurrenciesRepositoryImpl(
     private val currenciesFetchApi: CurrenciesFetchApi,
     private val currenciesGetAllApi: CurrenciesGetAllApi,
-    private val currenciesConvertApi: CurrenciesConvertApi
+    private val currenciesConvertApi: CurrenciesConvertApi,
+    private val localDbRepository: LocalCurrenciesRepository
 ) : CurrenciesRepository {
 
     override suspend fun fetchAll(from: String): CurrenciesRepoResponse {
@@ -52,6 +55,7 @@ class CurrenciesRepositoryImpl(
             when {
                 call.isSuccessful -> {
                     call.body()?.let {
+                        localDbRepository.insertAllCurrencies(it.currencies?.toEntityList() ?: throw Exception())
                         CurrenciesGetAllRepoResponse.SuccessGetAll(it)
                     } ?: CurrenciesGetAllRepoResponse.Error
                 }

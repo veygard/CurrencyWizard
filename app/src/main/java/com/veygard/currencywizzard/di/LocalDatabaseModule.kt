@@ -25,6 +25,6 @@ object LocalDatabaseModule {
 
     @Provides
     @Singleton
-    fun provideStarWarsDao(currenciesDatabase: CurrenciesDatabase) = currenciesDatabase.dao()
+    fun provideCurrenciesDao(currenciesDatabase: CurrenciesDatabase) = currenciesDatabase.dao()
 
 }
