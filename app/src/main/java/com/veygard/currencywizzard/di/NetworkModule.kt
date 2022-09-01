@@ -1,7 +1,10 @@
 package com.veygard.currencywizzard.di
 
-import androidx.compose.ui.input.key.Key.Companion.H
-import com.veygard.currencywizzard.data.network.CurrenciesApi
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
+import com.veygard.currencywizzard.data.network.model.currencies.fetch.FetchApiResponse
+import com.veygard.currencywizzard.data.network.model.currencies.fetch.FetchResultDeserializer
 import com.veygard.currencywizzard.util.Constants
 import com.veygard.currencywizzard.util.Constants.BASE_URL
 import dagger.Module
@@ -26,15 +29,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideStockApiService(retrofit: Retrofit): CurrenciesApi = retrofit.create(CurrenciesApi::class.java)
+    fun provideStockApiService(retrofit: Retrofit): CurrenciesFetchApi = retrofit.create(
+        CurrenciesFetchApi::class.java)
 
     @Provides
     @Singleton
     fun provideRemoteClient(): Retrofit {
+        val gson: Gson = GsonBuilder()
+            .registerTypeAdapter(FetchApiResponse::class.java, FetchResultDeserializer())
+            .create()
+
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .client(provideHttpClient())
             .build()
     }

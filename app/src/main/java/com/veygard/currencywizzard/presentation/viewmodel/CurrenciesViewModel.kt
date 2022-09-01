@@ -1,9 +1,8 @@
 package com.veygard.currencywizzard.presentation.viewmodel
 
-import android.os.AsyncTask.execute
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.veygard.currencywizzard.data.network.model.Currency
+import com.veygard.currencywizzard.data.network.model.currencies.Currency
 import com.veygard.currencywizzard.domain.response.CurrenciesRepoResponse
 import com.veygard.currencywizzard.domain.usecase.CurrenciesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,10 +19,11 @@ class CurrenciesViewModel  @Inject constructor(private val currenciesUseCases: C
 
     init {
         viewModelScope.launch {
-            val result  = currenciesUseCases.fetchMultiUseCase.execute("RUB", "EUR,Gbp")
+//            val result  = currenciesUseCases.fetchMultiUseCase.execute("RUB", "EUR,Gbp")
+            val result  = currenciesUseCases.fetchAllUseCase.execute("RUB")
             when(result){
                 is CurrenciesRepoResponse.SuccessFetch -> {
-                    _stateFlow.value = emptyList()
+                    _stateFlow.value = result.fetch.results
                 }
                 else -> {}
             }
