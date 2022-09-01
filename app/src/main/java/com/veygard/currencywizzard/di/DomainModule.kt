@@ -6,6 +6,10 @@ import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
 import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepositoryImpl
+import com.veygard.currencywizzard.domain.local.usecase.GetAllCurrencyEntityUseCase
+import com.veygard.currencywizzard.domain.local.usecase.GetFavoriteCurrencyEntityUseCase
+import com.veygard.currencywizzard.domain.local.usecase.LocalCurrenciesUseCases
+import com.veygard.currencywizzard.domain.local.usecase.UpdateCurrencyEntityUseCase
 import com.veygard.currencywizzard.domain.network.repository.CurrenciesRepository
 import com.veygard.currencywizzard.domain.network.repository.CurrenciesRepositoryImpl
 import com.veygard.currencywizzard.domain.network.usecase.*
@@ -43,6 +47,16 @@ object DomainModule {
         fetchAllUseCase = FetchAllUseCase(currenciesRepository),
         convertCurrencyUseCase = ConvertCurrencyUseCase((currenciesRepository)),
         getAllCurrenciesUseCase = GetAllCurrenciesUseCase(currenciesRepository)
+    )
+
+    @Provides
+    @Singleton
+    fun provideLocalCurrencyUseCases(
+        localCurrenciesRepository: LocalCurrenciesRepository
+    ): LocalCurrenciesUseCases = LocalCurrenciesUseCases(
+        updateCurrencyEntityUseCase = UpdateCurrencyEntityUseCase(localCurrenciesRepository),
+        getAllCurrencyEntityUseCase = GetAllCurrencyEntityUseCase(localCurrenciesRepository),
+        getFavoriteCurrencyEntityUseCase = GetFavoriteCurrencyEntityUseCase(localCurrenciesRepository)
     )
 
     @Provides

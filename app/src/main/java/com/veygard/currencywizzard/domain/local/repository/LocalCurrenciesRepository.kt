@@ -13,7 +13,7 @@ interface LocalCurrenciesRepository {
         descriptionName: String? = null
     )
 
-    suspend fun getAllCurrenciesDao(): List<CurrencyEntity>
+    suspend fun getAllCurrencies(): List<CurrencyEntity>
 
     suspend fun getCurrencyByDescription(descriptionName: String)  : CurrencyEntity?
 

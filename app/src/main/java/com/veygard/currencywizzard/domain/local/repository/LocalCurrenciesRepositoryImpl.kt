@@ -22,7 +22,7 @@ class LocalCurrenciesRepositoryImpl @Inject constructor(private val currenciesDa
         descriptionName = descriptionName
     )
 
-    override suspend fun getAllCurrenciesDao(): List<CurrencyEntity> =
+    override suspend fun getAllCurrencies(): List<CurrencyEntity> =
         currenciesDao.getAllCurrenciesDao()
 
     override suspend fun getCurrencyByDescription(descriptionName: String): CurrencyEntity? =

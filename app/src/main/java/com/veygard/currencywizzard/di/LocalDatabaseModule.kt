@@ -27,4 +27,6 @@ object LocalDatabaseModule {
     @Singleton
     fun provideCurrenciesDao(currenciesDatabase: CurrenciesDatabase) = currenciesDatabase.dao()
 
+
+
 }

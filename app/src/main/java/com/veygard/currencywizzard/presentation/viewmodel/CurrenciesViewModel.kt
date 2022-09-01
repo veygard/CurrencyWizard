@@ -3,6 +3,7 @@ package com.veygard.currencywizzard.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.veygard.currencywizzard.data.network.model.currencies.Currency
+import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizzard.domain.network.response.CurrenciesConvertRepoResponse
 import com.veygard.currencywizzard.domain.network.response.CurrenciesFetchRepoResponse
 import com.veygard.currencywizzard.domain.network.response.CurrenciesGetAllRepoResponse
@@ -14,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CurrenciesViewModel  @Inject constructor(private val currenciesUseCases: CurrenciesUseCases) : ViewModel(){
+class CurrenciesViewModel  @Inject constructor(
+    private val currenciesUseCases: CurrenciesUseCases,
+    private val localCurrenciesRepository: LocalCurrenciesRepository
+) : ViewModel(){
 
     private val _stateFlow = MutableStateFlow<List<Currency>?>(null)
     val stateFlow = _stateFlow.asStateFlow()
