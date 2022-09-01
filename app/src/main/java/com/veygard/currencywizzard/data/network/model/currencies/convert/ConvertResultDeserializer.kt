@@ -20,18 +20,22 @@ class ConvertResultDeserializer : JsonDeserializer<CurrenciesConvertApiResponse>
         val amount = context.deserialize<Double?>(obj.get("amount"), Double::class.java)
         val resultSet = obj.get("result").asJsonObject.entrySet()
 
-        var currencyName = ""
-        var rate = 0.0
+        var currencyName: String? = null
+        var value: Double? = null
+        var rate: Double? = null
         resultSet.forEach {
             if (it.key == "rate") rate = it.value.asDouble
-            else currencyName = it.value.asString
+            else {
+                currencyName = it.key
+                value= it.value.asDouble
+            }
         }
         val ms = context.deserialize<Int?>(obj.get("ms"), Int::class.java)
 
         return CurrenciesConvertApiResponse(
             base = base,
             ms = ms,
-            result = ConvertCurrenciesResult(currencyName, rate),
+            result = ConvertCurrenciesResult(currencyName= currencyName!!, value=value!!,rate!!),
             amount = amount
         )
     }

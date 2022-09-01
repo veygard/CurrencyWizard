@@ -9,5 +9,6 @@ data class CurrenciesConvertApiResponse(
 
 data class ConvertCurrenciesResult(
     val currencyName: String,
+    val value: Double,
     val rate: Double
 )
