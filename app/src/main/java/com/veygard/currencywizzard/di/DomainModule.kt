@@ -5,9 +5,7 @@ import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
 import com.veygard.currencywizzard.domain.repository.CurrenciesRepository
 import com.veygard.currencywizzard.domain.repository.CurrenciesRepositoryImpl
-import com.veygard.currencywizzard.domain.usecase.CurrenciesUseCases
-import com.veygard.currencywizzard.domain.usecase.FetchAllUseCase
-import com.veygard.currencywizzard.domain.usecase.FetchMultiUseCase
+import com.veygard.currencywizzard.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,6 +31,8 @@ object DomainModule {
         currenciesRepository: CurrenciesRepository,
     ): CurrenciesUseCases = CurrenciesUseCases(
         fetchMultiUseCase = FetchMultiUseCase(currenciesRepository),
-        fetchAllUseCase = FetchAllUseCase(currenciesRepository)
+        fetchAllUseCase = FetchAllUseCase(currenciesRepository),
+        convertCurrencyUseCase = ConvertCurrencyUseCase((currenciesRepository)),
+        getAllCurrenciesUseCase = GetAllCurrenciesUseCase(currenciesRepository)
     )
 }
