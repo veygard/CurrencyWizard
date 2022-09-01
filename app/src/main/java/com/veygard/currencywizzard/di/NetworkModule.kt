@@ -2,9 +2,15 @@ package com.veygard.currencywizzard.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.veygard.currencywizzard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
+import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
+import com.veygard.currencywizzard.data.network.model.currencies.convert.ConvertResultDeserializer
+import com.veygard.currencywizzard.data.network.model.currencies.convert.CurrenciesConvertApiResponse
 import com.veygard.currencywizzard.data.network.model.currencies.fetch.FetchApiResponse
 import com.veygard.currencywizzard.data.network.model.currencies.fetch.FetchResultDeserializer
+import com.veygard.currencywizzard.data.network.model.currencies.getall.CurrenciesGetAllResultDeserializer
+import com.veygard.currencywizzard.data.network.model.currencies.getall.GetAllApiResponse
 import com.veygard.currencywizzard.util.Constants
 import com.veygard.currencywizzard.util.Constants.BASE_URL
 import dagger.Module
@@ -20,7 +26,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
+
+const val RETROFIT_FETCH_NAME  = "FetchRetrofit"
+const val RETROFIT_GET_ALL_NAME  = "AllCurrenciesRetrofit"
+const val RETROFIT_CONVERT_NAME  = "convertRetrofit"
 
 
 @Module
@@ -29,12 +40,23 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideStockApiService(retrofit: Retrofit): CurrenciesFetchApi = retrofit.create(
+    fun provideCurrenciesFetchService(@Named(RETROFIT_FETCH_NAME) retrofit: Retrofit): CurrenciesFetchApi = retrofit.create(
         CurrenciesFetchApi::class.java)
 
     @Provides
     @Singleton
-    fun provideRemoteClient(): Retrofit {
+    fun provideCurrenciesAllService(@Named(RETROFIT_GET_ALL_NAME) retrofit: Retrofit): CurrenciesGetAllApi = retrofit.create(
+        CurrenciesGetAllApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCurrenciesConvertService(@Named(RETROFIT_CONVERT_NAME) retrofit: Retrofit): CurrenciesConvertApi = retrofit.create(
+        CurrenciesConvertApi::class.java)
+
+    @Provides
+    @Singleton
+    @Named(RETROFIT_FETCH_NAME)
+    fun provideCurrenciesFetchClient(): Retrofit {
         val gson: Gson = GsonBuilder()
             .registerTypeAdapter(FetchApiResponse::class.java, FetchResultDeserializer())
             .create()
@@ -46,6 +68,39 @@ object NetworkModule {
             .client(provideHttpClient())
             .build()
     }
+
+    @Provides
+    @Singleton
+    @Named(RETROFIT_GET_ALL_NAME)
+    fun provideCurrenciesAllClient(): Retrofit {
+        val gson: Gson = GsonBuilder()
+            .registerTypeAdapter(GetAllApiResponse::class.java, CurrenciesGetAllResultDeserializer())
+            .create()
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(provideHttpClient())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named(RETROFIT_CONVERT_NAME)
+    fun provideCurrenciesConvertClient(): Retrofit {
+        val gson: Gson = GsonBuilder()
+            .registerTypeAdapter(CurrenciesConvertApiResponse::class.java, ConvertResultDeserializer())
+            .create()
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(provideHttpClient())
+            .build()
+    }
+
 
 
     @Provides

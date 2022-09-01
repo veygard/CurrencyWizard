@@ -1,13 +1,17 @@
 package com.veygard.currencywizzard.domain.repository
 
+import com.veygard.currencywizzard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
 import com.veygard.currencywizzard.data.network.model.currencies.fetch.FetchApiResponse
+import com.veygard.currencywizzard.domain.response.CurrenciesFetchRepoResponse
+import com.veygard.currencywizzard.domain.response.CurrenciesGetAllRepoResponse
 import com.veygard.currencywizzard.domain.response.CurrenciesRepoResponse
 
 class CurrenciesRepositoryImpl(
     private val currenciesFetchApi: CurrenciesFetchApi,
-//    private val currenciesGetAllApi: CurrenciesGetAllApi
+    private val currenciesGetAllApi: CurrenciesGetAllApi,
+    private val currenciesConvertApi: CurrenciesConvertApi
 ) : CurrenciesRepository {
 
     override suspend fun fetchAll(from: String): CurrenciesRepoResponse {
@@ -17,10 +21,10 @@ class CurrenciesRepositoryImpl(
             call.isSuccessful -> {
                 val map = mutableMapOf<String, String>()
                 call.body()?.let { response ->
-                    CurrenciesRepoResponse.SuccessFetch(response)
-                } ?: CurrenciesRepoResponse.Error
+                    CurrenciesFetchRepoResponse.SuccessFetch(response)
+                } ?: CurrenciesFetchRepoResponse.Error
             }
-            else -> CurrenciesRepoResponse.Error
+            else -> CurrenciesFetchRepoResponse.Error
         }
     }
 
@@ -30,11 +34,20 @@ class CurrenciesRepositoryImpl(
             call.isSuccessful -> {
                 call.body()?.let {
                     val map = mutableMapOf<String, String>()
-                    CurrenciesRepoResponse.SuccessFetch(FetchApiResponse())
-                } ?: CurrenciesRepoResponse.Error
+                    CurrenciesFetchRepoResponse.SuccessFetch(FetchApiResponse())
+                } ?: CurrenciesFetchRepoResponse.Error
             }
-            else -> CurrenciesRepoResponse.Error
+            else -> CurrenciesFetchRepoResponse.Error
         }
     }
+
+    override suspend fun getAllCurrencies(): CurrenciesRepoResponse {
+        return CurrenciesGetAllRepoResponse.Error
+    }
+
+    override suspend fun convertCurrency(from: String, to: String, amount: Double):  CurrenciesRepoResponse {
+        return CurrenciesGetAllRepoResponse.Error
+    }
+
 
 }

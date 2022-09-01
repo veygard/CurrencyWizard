@@ -1,5 +1,6 @@
 package com.veygard.currencywizzard.di
 
+import com.veygard.currencywizzard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizzard.data.network.api.CurrenciesGetAllApi
 import com.veygard.currencywizzard.domain.repository.CurrenciesRepository
@@ -22,8 +23,9 @@ object DomainModule {
     @Singleton
     fun provideCurrenciesRepository(
         currenciesFetchApi: CurrenciesFetchApi,
-//        currenciesGetAllApi: CurrenciesGetAllApi
-    ): CurrenciesRepository = CurrenciesRepositoryImpl(currenciesFetchApi)
+        currenciesGetAllApi: CurrenciesGetAllApi,
+        currenciesConvertApi: CurrenciesConvertApi
+    ): CurrenciesRepository = CurrenciesRepositoryImpl(currenciesFetchApi, currenciesGetAllApi, currenciesConvertApi)
 
     @Provides
     @Singleton
