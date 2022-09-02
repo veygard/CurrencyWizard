@@ -20,12 +20,12 @@ kotlin {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.veygard.currencywizzard"
         minSdk 25
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -117,4 +117,15 @@ dependencies {
     implementation("com.squareup.moshi:moshi:$moshi_version") //моши для перевода list <-> json, room не хранит списки
     ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
     implementation("com.squareup.moshi:moshi-kotlin:$moshi_version")
+    //Material 3 imports
+    implementation 'androidx.compose.material3:material3:1.0.0-beta01'
+
+    //countries flags
+    implementation 'com.github.murgupluoglu:flagkit-android:1.0.2'
+
+    // image
+    implementation "io.coil-kt:coil-compose:2.0.0-rc01"
+    implementation "com.github.skydoves:landscapist-glide:1.5.0"
+    implementation 'io.coil-kt:coil:1.3.2'
+
 }

@@ -1,5 +1,6 @@
 package com.veygard.currencywizzard.presentation.screens.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
@@ -24,9 +25,6 @@ class MainScreenViewModel @Inject constructor(
     private val _stateFlow = MutableStateFlow<MainScreenState?>(null)
     val stateFlow: StateFlow<MainScreenState?> = _stateFlow
 
-    init {
-        getAllCurrencies()
-    }
 
     fun fetchAll(from: String = "USD") {
         viewModelScope.launch {
@@ -53,6 +51,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun getAllCurrencies() {
         viewModelScope.launch {
+            Log.d("testing_something","getAllCurrencies started")
             _stateFlow.update { MainScreenState.Loading }
             val result = currenciesUseCases.getAllCurrenciesUseCase.execute()
             when (result) {
