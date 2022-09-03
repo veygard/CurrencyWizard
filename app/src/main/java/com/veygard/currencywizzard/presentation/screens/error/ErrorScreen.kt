@@ -2,6 +2,7 @@ package com.veygard.currencywizzard.presentation.screens.error
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -15,14 +16,14 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.veygard.currencywizzard.R
-import com.veygard.currencywizzard.presentation.screens.destinations.MainScreenDestination
-import com.veygard.currencywizzard.presentation.screens.main.MainScreen
+import com.veygard.currencywizzard.presentation.screens.destinations.AllCurrenciesScreenDestination
 import com.veygard.currencywizzard.presentation.ui.H_L3
 import com.veygard.currencywizzard.presentation.ui.Margin
 import com.veygard.currencywizzard.presentation.ui.Paragraph_16_Medium
 import com.veygard.currencywizzard.presentation.ui.SpacingVertical
 import com.veygard.currencywizzard.presentation.ui.components.CommonButton
 
+@ExperimentalMaterialApi
 @Composable
 @Destination
 fun ErrorScreen(
@@ -62,7 +63,7 @@ fun ErrorScreen(
             )
             SpacingVertical(24.0)
             CommonButton(label = "Перейти на страницу логина") {
-                navigator.navigate(MainScreenDestination())
+                navigator.navigate(AllCurrenciesScreenDestination)
             }
         }
     }

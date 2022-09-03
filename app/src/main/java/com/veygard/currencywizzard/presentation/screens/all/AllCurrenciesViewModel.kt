@@ -1,36 +1,56 @@
-package com.veygard.currencywizzard.presentation.screens.main
+package com.veygard.currencywizzard.presentation.screens.all
 
-import android.util.Log
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.veygard.currencywizzard.di.SHARED_PREFERENCES_CURRENCY
+import com.veygard.currencywizzard.di.SHARED_PREFERENCES_DEFAULT_CURRENCY
 import com.veygard.currencywizzard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizzard.domain.network.response.CurrenciesConvertRepoResponse
 import com.veygard.currencywizzard.domain.network.response.CurrenciesFetchRepoResponse
-import com.veygard.currencywizzard.domain.network.response.CurrenciesGetAllRepoResponse
 import com.veygard.currencywizzard.domain.network.usecase.CurrenciesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainScreenViewModel @Inject constructor(
+class AllCurrenciesViewModel @Inject constructor(
     private val currenciesUseCases: CurrenciesUseCases,
-    private val localCurrenciesRepository: LocalCurrenciesRepository
+    private val localCurrenciesRepository: LocalCurrenciesRepository,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow<MainScreenState?>(null)
-    val stateFlow: StateFlow<MainScreenState?> = _stateFlow
+    private val _stateFlow = MutableStateFlow<AllCurrenciesState?>(null)
+    val stateFlow: StateFlow<AllCurrenciesState?> = _stateFlow
 
 
-    fun fetchAll(from: String = "USD") {
+    init {
+        getLocalCurrenciesList()
+    }
+
+    private fun getLocalCurrenciesList() {
         viewModelScope.launch {
-            val result = currenciesUseCases.fetchAllUseCase.execute(from)
+            val result = localCurrenciesRepository.getAllCurrencies()
+            if (result.isEmpty()) _stateFlow.update { AllCurrenciesState.NoLocalDb }
+            else fetchAll()
+        }
+    }
+
+    fun fetchAll() {
+        viewModelScope.launch {
+            val fromCurrency = sharedPreferences.getString(
+                SHARED_PREFERENCES_CURRENCY,
+                SHARED_PREFERENCES_DEFAULT_CURRENCY
+            )
+            val result = currenciesUseCases.fetchAllUseCase.execute(
+                fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY
+            )
             when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
+
                 }
                 else -> {}
             }
@@ -45,24 +65,6 @@ class MainScreenViewModel @Inject constructor(
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
                 }
                 else -> {}
-            }
-        }
-    }
-
-    fun getAllCurrencies() {
-        viewModelScope.launch {
-            Log.d("testing_something","getAllCurrencies started")
-            _stateFlow.update { MainScreenState.Loading }
-            val result = currenciesUseCases.getAllCurrenciesUseCase.execute()
-            when (result) {
-                is CurrenciesGetAllRepoResponse.SuccessGetAll -> {
-                    _stateFlow.update {
-                        result.getAll.currencies?.let { list ->
-                            MainScreenState.CurrencyListReady(list)
-                        } ?: MainScreenState.ListError
-                    }
-                }
-                CurrenciesGetAllRepoResponse.Error -> _stateFlow.update { MainScreenState.ConnectionError }
             }
         }
     }
