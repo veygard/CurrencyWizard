@@ -1,8 +1,0 @@
-package com.veygard.currencywizzard
-
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-
-
-@HiltAndroidApp
-class CurrencyWizzardApplication: Application()

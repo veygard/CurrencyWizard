@@ -23,7 +23,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.veygard.currencywizzard"
+        applicationId "com.veygard.currencywzard"
         minSdk 25
         targetSdk 33
         versionCode 1

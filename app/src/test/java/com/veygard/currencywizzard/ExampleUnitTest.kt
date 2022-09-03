@@ -1,4 +1,4 @@
-package com.veygard.currencywizzard
+package com.veygard.currencywizard
 
 import org.junit.Test
 
