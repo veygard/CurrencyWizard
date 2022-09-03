@@ -1,20 +1,28 @@
 package com.veygard.currencywizard.domain.network.repository
 
+import android.content.Context
+import com.murgupluoglu.flagkit.FlagKit
+import com.veygard.currencywizard.R
 import com.veygard.currencywizard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizard.data.network.api.CurrenciesGetAllApi
+import com.veygard.currencywizard.data.network.model.currencies.Currency
 import com.veygard.currencywizard.data.network.model.currencies.toEntityList
+import com.veygard.currencywizard.data.network.model.currencies.toStuffed
 import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesRepository
+import com.veygard.currencywizard.domain.model.CurrencyStuffed
 import com.veygard.currencywizard.domain.network.response.CurrenciesConvertRepoResponse
 import com.veygard.currencywizard.domain.network.response.CurrenciesFetchRepoResponse
 import com.veygard.currencywizard.domain.network.response.CurrenciesGetAllRepoResponse
 import com.veygard.currencywizard.domain.network.response.CurrenciesRepoResponse
+import com.veygard.currencywizard.util.extentions.round
 
 class CurrenciesRepositoryImpl(
     private val currenciesFetchApi: CurrenciesFetchApi,
     private val currenciesGetAllApi: CurrenciesGetAllApi,
     private val currenciesConvertApi: CurrenciesConvertApi,
-    private val localDbRepository: LocalCurrenciesRepository
+    private val localDbRepository: LocalCurrenciesRepository,
+    private val context: Context
 ) : CurrenciesRepository {
 
     override suspend fun fetchAll(from: String): CurrenciesRepoResponse {
@@ -23,7 +31,8 @@ class CurrenciesRepositoryImpl(
             when {
                 call.isSuccessful -> {
                     call.body()?.let {
-                        CurrenciesFetchRepoResponse.SuccessFetch(it)
+                        val stuffedList = getStuffCurrencies(it.results)
+                        stuffedList?.let { CurrenciesFetchRepoResponse.SuccessFetch(it) }
                     } ?: CurrenciesFetchRepoResponse.Error
                 }
                 else -> CurrenciesFetchRepoResponse.Error
@@ -39,7 +48,8 @@ class CurrenciesRepositoryImpl(
             when {
                 call.isSuccessful -> {
                     call.body()?.let {
-                        CurrenciesFetchRepoResponse.SuccessFetch(it)
+                        val stuffed  = getStuffCurrencies(it.results)
+                        stuffed?.let {  CurrenciesFetchRepoResponse.SuccessFetch(stuffed)}
                     } ?: CurrenciesFetchRepoResponse.Error
                 }
                 else -> CurrenciesFetchRepoResponse.Error
@@ -55,7 +65,9 @@ class CurrenciesRepositoryImpl(
             when {
                 call.isSuccessful -> {
                     call.body()?.let {
-                        localDbRepository.insertAllCurrencies(it.currencies?.toEntityList() ?: throw Exception())
+                        localDbRepository.insertAllCurrencies(
+                            it.currencies?.toEntityList() ?: throw Exception()
+                        )
                         CurrenciesGetAllRepoResponse.SuccessGetAll(it)
                     } ?: CurrenciesGetAllRepoResponse.Error
                 }
@@ -86,4 +98,33 @@ class CurrenciesRepositoryImpl(
         }
     }
 
+    private suspend fun getStuffCurrencies(currencies: List<Currency>?): List<CurrencyStuffed>? {
+        val entityList = localDbRepository.getAllCurrencies()
+        if (entityList.isEmpty()) return null
+        if (currencies.isNullOrEmpty()) return null
+
+        else {
+            val stuffedList = mutableListOf<CurrencyStuffed>()
+            currencies.forEach { currency ->
+                val description =
+                    entityList.singleOrNull { it.abbreviation == currency.name }?.descriptionName
+                val isFavorite =
+                    entityList.singleOrNull { it.abbreviation == currency.name }?.isFavorite
+                val flag = FlagKit.getResId(context, currency.name.substring(0, 2))
+                try {
+                    stuffedList.add(
+                        currency.toStuffed(
+                            value= currency.value.round() ?: return null,
+                            isFavorite = isFavorite ?: return null,
+                            flagId = flag,
+                            descriptionName = description ?: return null
+                        )
+                    )
+                } catch (e: Exception){
+                    return null
+                }
+            }
+            return stuffedList
+        }
+    }
 }

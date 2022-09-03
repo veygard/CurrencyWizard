@@ -8,13 +8,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.veygard.currencywizard.domain.model.CurrencyStuffed
 import com.veygard.currencywizard.presentation.navigation.BottomBarScreen
 import com.veygard.currencywizard.presentation.navigation.provideBottomBarScreenList
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.screens.destinations.StartScreenDestination
 import com.veygard.currencywizard.presentation.ui.components.BottomBar
+import com.veygard.currencywizard.presentation.ui.components.CurrencyListCompose
 
 @Composable
 @Destination
@@ -28,26 +32,35 @@ fun AllCurrenciesScreen(
     })
 
     when (screenState.value) {
+        null -> {}
         AllCurrenciesState.ConnectionError -> navigator.navigate(ErrorScreenDestination)
         AllCurrenciesState.ListError -> navigator.navigate(ErrorScreenDestination)
+        AllCurrenciesState.NoLocalDb -> navigator.navigate(StartScreenDestination)
         AllCurrenciesState.Loading -> Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) { CircularProgressIndicator() }
+
         is AllCurrenciesState.CurrencyListReady -> {
-            AllCurrenciesScreenContent(navigator)
+            AllCurrenciesScreenContent(navigator, (screenState.value as AllCurrenciesState.CurrencyListReady).list)
         }
-        AllCurrenciesState.NoLocalDb -> navigator.navigate(StartScreenDestination)
-        null -> {}
     }
 
 }
 
 @Composable
-fun AllCurrenciesScreenContent(navigator: DestinationsNavigator) {
+fun AllCurrenciesScreenContent(navigator: DestinationsNavigator, currencies: List<CurrencyStuffed>) {
     Scaffold(
         bottomBar = { BottomBar(navigator, provideBottomBarScreenList(), BottomBarScreen.All) }
     ) {
-        Text(text = "All")
+        SwipeRefresh(state = rememberSwipeRefreshState(
+            false
+        ), onRefresh = {
+
+        }) {
+            CurrencyListCompose(currencies = currencies, onFavoriteClick = {
+
+            })
+        }
     }
 }

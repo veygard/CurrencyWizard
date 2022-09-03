@@ -80,7 +80,7 @@ val H_L3 = TextStyle(
 val Paragraph_16_longread = TextStyle(
     fontFamily = FontFamily.Default,
     fontSize = 16.sp,
-    fontWeight = FontWeight.W400,
+    fontWeight = FontWeight.W800,
     lineHeight = 24.sp,
     textAlign = TextAlign.Start
 )

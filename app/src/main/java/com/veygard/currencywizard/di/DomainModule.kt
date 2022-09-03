@@ -1,5 +1,6 @@
 package com.veygard.currencywizard.di
 
+import android.content.Context
 import com.veygard.currencywizard.data.local.CurrenciesDao
 import com.veygard.currencywizard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizard.data.network.api.CurrenciesFetchApi
@@ -16,6 +17,7 @@ import com.veygard.currencywizard.domain.network.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.DelicateCoroutinesApi
 import javax.inject.Singleton
@@ -30,12 +32,14 @@ object DomainModule {
         currenciesFetchApi: CurrenciesFetchApi,
         currenciesGetAllApi: CurrenciesGetAllApi,
         currenciesConvertApi: CurrenciesConvertApi,
-        localCurrenciesRepository: LocalCurrenciesRepository
+        localCurrenciesRepository: LocalCurrenciesRepository,
+        @ApplicationContext context: Context
     ): CurrenciesRepository = CurrenciesRepositoryImpl(
         currenciesFetchApi,
         currenciesGetAllApi,
         currenciesConvertApi,
-        localCurrenciesRepository
+        localCurrenciesRepository,
+        context
     )
 
     @Provides

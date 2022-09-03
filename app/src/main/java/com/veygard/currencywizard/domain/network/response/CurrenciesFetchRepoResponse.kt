@@ -3,11 +3,12 @@ package com.veygard.currencywizard.domain.network.response
 import com.veygard.currencywizard.data.network.model.currencies.convert.CurrenciesConvertApiResponse
 import com.veygard.currencywizard.data.network.model.currencies.fetch.FetchApiResponse
 import com.veygard.currencywizard.data.network.model.currencies.getall.GetAllApiResponse
+import com.veygard.currencywizard.domain.model.CurrencyStuffed
 
 interface CurrenciesRepoResponse
 
 sealed class CurrenciesFetchRepoResponse: CurrenciesRepoResponse {
-    data class SuccessFetch(val fetch: FetchApiResponse ): CurrenciesFetchRepoResponse()
+    data class SuccessFetch(val fetch: List<CurrencyStuffed> ): CurrenciesFetchRepoResponse()
     object Error: CurrenciesFetchRepoResponse()
 }
 

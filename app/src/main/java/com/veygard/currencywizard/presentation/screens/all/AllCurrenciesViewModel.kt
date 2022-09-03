@@ -41,16 +41,14 @@ class AllCurrenciesViewModel @Inject constructor(
 
     fun fetchAll() {
         viewModelScope.launch {
+            _stateFlow.update { AllCurrenciesState.Loading }
             val fromCurrency = loadPickedCurrency()
             val result = currenciesUseCases.fetchAllUseCase.execute(
                 fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY
             )
             when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.update {
-                        result.fetch.results?.let { AllCurrenciesState.CurrencyListReady(it) }
-                            ?: AllCurrenciesState.ListError
-                    }
+                    _stateFlow.update {  AllCurrenciesState.CurrencyListReady(result.fetch) }
                 }
                 else -> {}
             }
