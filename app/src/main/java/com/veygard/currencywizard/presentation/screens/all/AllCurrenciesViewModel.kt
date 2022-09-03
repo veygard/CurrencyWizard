@@ -3,6 +3,7 @@ package com.veygard.currencywizard.presentation.screens.all
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.veygard.currencywizard.data.local.CurrencyEntity
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_DEFAULT_CURRENCY
 import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesRepository
@@ -26,6 +27,8 @@ class AllCurrenciesViewModel @Inject constructor(
     private val _stateFlow = MutableStateFlow<AllCurrenciesState?>(null)
     val stateFlow: StateFlow<AllCurrenciesState?> = _stateFlow
 
+    private val _totalList = MutableStateFlow<List<CurrencyEntity>?>(null)
+    val totalList: StateFlow<List<CurrencyEntity>?> = _totalList
 
     init {
         getLocalCurrenciesList()
@@ -35,7 +38,10 @@ class AllCurrenciesViewModel @Inject constructor(
         viewModelScope.launch {
             val result = localCurrenciesRepository.getAllCurrencies()
             if (result.isEmpty()) _stateFlow.update { AllCurrenciesState.NoLocalDb }
-            else fetchAll()
+            else {
+                _totalList.update { result }
+                fetchAll()
+            }
         }
     }
 
