@@ -26,7 +26,7 @@ import com.veygard.currencywizard.presentation.ui.*
 @Composable
 fun CurrencyListCompose(
     currencies: List<CurrencyStuffed>,
-    onFavoriteClick: () -> Unit,
+    onFavoriteClick: (String, Boolean) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -42,7 +42,7 @@ fun CurrencyListCompose(
 }
 
 @Composable
-private fun CurrencyItem(currency: CurrencyStuffed, onFavoriteClick: () -> Unit) {
+private fun CurrencyItem(currency: CurrencyStuffed, onFavoriteClick: (String, Boolean) -> Unit) {
 
     val favoriteState = remember { mutableStateOf(currency.isFavorite) }
 
@@ -102,7 +102,7 @@ private fun CurrencyItem(currency: CurrencyStuffed, onFavoriteClick: () -> Unit)
                         .clip(CircleShape)
                         .clickable {
                             favoriteState.value = !favoriteState.value
-                            onFavoriteClick()
+                            onFavoriteClick(currency.abbreviation, favoriteState.value)
                         }
                         .size(36.dp),
                     error = painterResource(R.drawable.ic_baseline_star_border_24),

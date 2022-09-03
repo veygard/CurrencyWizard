@@ -1,7 +1,9 @@
 package com.veygard.currencywizard.presentation.screens.all
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +32,10 @@ fun AllCurrenciesScreen(
     LaunchedEffect(key1 = Unit, block = {
         viewModel.fetchAll()
     })
+    
+    val onFavoriteClick: (String, Boolean) -> Unit = { currency, isFavorite  ->
+        viewModel.changeFavoriteState(currency, isFavorite)
+    }
 
     when (screenState.value) {
         null -> {}
@@ -42,14 +48,22 @@ fun AllCurrenciesScreen(
         ) { CircularProgressIndicator() }
 
         is AllCurrenciesState.CurrencyListReady -> {
-            AllCurrenciesScreenContent(navigator, (screenState.value as AllCurrenciesState.CurrencyListReady).list)
+            AllCurrenciesScreenContent(
+                navigator,
+                (screenState.value as AllCurrenciesState.CurrencyListReady).list,
+                onFavoriteClick
+            )
         }
     }
 
 }
 
 @Composable
-fun AllCurrenciesScreenContent(navigator: DestinationsNavigator, currencies: List<CurrencyStuffed>) {
+fun AllCurrenciesScreenContent(
+    navigator: DestinationsNavigator,
+    currencies: List<CurrencyStuffed>,
+    onFavoriteClick: (String, Boolean) -> Unit
+) {
     Scaffold(
         bottomBar = { BottomBar(navigator, provideBottomBarScreenList(), BottomBarScreen.All) }
     ) {
@@ -58,9 +72,7 @@ fun AllCurrenciesScreenContent(navigator: DestinationsNavigator, currencies: Lis
         ), onRefresh = {
 
         }) {
-            CurrencyListCompose(currencies = currencies, onFavoriteClick = {
-
-            })
+            CurrencyListCompose(currencies = currencies, onFavoriteClick = onFavoriteClick)
         }
     }
 }

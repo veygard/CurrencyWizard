@@ -2,7 +2,7 @@ package com.veygard.currencywizard.domain.network.repository
 
 import android.content.Context
 import com.murgupluoglu.flagkit.FlagKit
-import com.veygard.currencywizard.R
+import com.veygard.currencywizard.data.local.CurrencyEntity
 import com.veygard.currencywizard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizard.data.network.api.CurrenciesGetAllApi
@@ -48,8 +48,8 @@ class CurrenciesRepositoryImpl(
             when {
                 call.isSuccessful -> {
                     call.body()?.let {
-                        val stuffed  = getStuffCurrencies(it.results)
-                        stuffed?.let {  CurrenciesFetchRepoResponse.SuccessFetch(stuffed)}
+                        val stuffed = getStuffCurrencies(it.results)
+                        stuffed?.let { CurrenciesFetchRepoResponse.SuccessFetch(stuffed) }
                     } ?: CurrenciesFetchRepoResponse.Error
                 }
                 else -> CurrenciesFetchRepoResponse.Error
@@ -65,6 +65,7 @@ class CurrenciesRepositoryImpl(
             when {
                 call.isSuccessful -> {
                     call.body()?.let {
+                        addCurrenciesToLocalDb(it.currencies, getFavoriteCurrencies())
                         localDbRepository.insertAllCurrencies(
                             it.currencies?.toEntityList() ?: throw Exception()
                         )
@@ -102,7 +103,6 @@ class CurrenciesRepositoryImpl(
         val entityList = localDbRepository.getAllCurrencies()
         if (entityList.isEmpty()) return null
         if (currencies.isNullOrEmpty()) return null
-
         else {
             val stuffedList = mutableListOf<CurrencyStuffed>()
             currencies.forEach { currency ->
@@ -114,17 +114,32 @@ class CurrenciesRepositoryImpl(
                 try {
                     stuffedList.add(
                         currency.toStuffed(
-                            value= currency.value.round() ?: return null,
+                            value = currency.value.round() ?: return null,
                             isFavorite = isFavorite ?: return null,
                             flagId = flag,
                             descriptionName = description ?: return null
                         )
                     )
-                } catch (e: Exception){
+                } catch (e: Exception) {
                     return null
                 }
             }
             return stuffedList
         }
+    }
+
+    private suspend fun getFavoriteCurrencies(): List<CurrencyEntity>? {
+        return localDbRepository.getFavoriteCurrencies()
+    }
+
+    private suspend fun addCurrenciesToLocalDb(
+        networkList: List<Currency>?,
+        favorites: List<CurrencyEntity>?
+    ) {
+        favorites?.forEach { entity ->
+            networkList?.singleOrNull { it.name == entity.abbreviation }?.isFavorite =
+                entity.isFavorite
+        }
+        localDbRepository.insertAllCurrencies(networkList?.toEntityList() ?: return)
     }
 }

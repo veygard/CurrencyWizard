@@ -50,32 +50,39 @@ class AllCurrenciesViewModel @Inject constructor(
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
                     _stateFlow.update {  AllCurrenciesState.CurrencyListReady(result.fetch) }
                 }
-                else -> {}
+                else -> _stateFlow.update { AllCurrenciesState.ConnectionError }
             }
         }
     }
 
-    fun fetchMulti(from: String, currencyList: List<String>) {
+    fun changeFavoriteState(currency: String, isFavorite: Boolean){
         viewModelScope.launch {
-            val to = currencyList.joinToString(separator = ",")
-            val result = currenciesUseCases.fetchMultiUseCase.execute(from, to)
-            when (result) {
-                is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                }
-                else -> {}
-            }
+            localCurrenciesRepository.updateCurrencyByAbbreviation(currency, isFavorite)
         }
     }
 
-    fun convert(from: String, to: String, amount: Double) {
-        viewModelScope.launch {
-            val result = currenciesUseCases.convertCurrencyUseCase.execute(from, to, amount)
-            when (result) {
-                is CurrenciesConvertRepoResponse.SuccessConvert -> {
-                }
-            }
-        }
-    }
+//    fun fetchMulti(from: String, currencyList: List<String>) {
+//        viewModelScope.launch {
+//            val to = currencyList.joinToString(separator = ",")
+//            val result = currenciesUseCases.fetchMultiUseCase.execute(from, to)
+//            when (result) {
+//                is CurrenciesFetchRepoResponse.SuccessFetch -> {
+//                }
+//                else -> {}
+//            }
+//        }
+//    }
+//
+//
+//    fun convert(from: String, to: String, amount: Double) {
+//        viewModelScope.launch {
+//            val result = currenciesUseCases.convertCurrencyUseCase.execute(from, to, amount)
+//            when (result) {
+//                is CurrenciesConvertRepoResponse.SuccessConvert -> {
+//                }
+//            }
+//        }
+//    }
 
     fun savePickedCurrency(currency: String) {
         sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENCY, currency).apply()

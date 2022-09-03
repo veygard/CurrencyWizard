@@ -3,12 +3,12 @@ package com.veygard.currencywizard.data.network.model.currencies
 import com.veygard.currencywizard.data.local.CurrencyEntity
 import com.veygard.currencywizard.domain.model.CurrencyStuffed
 
-data class Currency(val name: String, val value: String)
+data class Currency(val name: String, val value: String, var isFavorite: Boolean?= null)
 
-fun Currency.toEntity(isFavorite: Boolean) =
-    CurrencyEntity(abbreviation = name, descriptionName = value, isFavorite = isFavorite)
+fun Currency.toEntity() =
+    CurrencyEntity(abbreviation = name, descriptionName = value, isFavorite = isFavorite ?: false)
 
-fun List<Currency>.toEntityList() = map { it.toEntity(false) }
+fun List<Currency>.toEntityList() = map { it.toEntity() }
 
 fun Currency.toStuffed(value:String, isFavorite: Boolean, flagId: Int, descriptionName: String) =
     CurrencyStuffed(
