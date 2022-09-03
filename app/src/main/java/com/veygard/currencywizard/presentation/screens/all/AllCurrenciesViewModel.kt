@@ -41,16 +41,16 @@ class AllCurrenciesViewModel @Inject constructor(
 
     fun fetchAll() {
         viewModelScope.launch {
-            val fromCurrency = sharedPreferences.getString(
-                SHARED_PREFERENCES_CURRENCY,
-                SHARED_PREFERENCES_DEFAULT_CURRENCY
-            )
+            val fromCurrency = loadPickedCurrency()
             val result = currenciesUseCases.fetchAllUseCase.execute(
                 fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY
             )
             when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
-
+                    _stateFlow.update {
+                        result.fetch.results?.let { AllCurrenciesState.CurrencyListReady(it) }
+                            ?: AllCurrenciesState.ListError
+                    }
                 }
                 else -> {}
             }
@@ -78,4 +78,13 @@ class AllCurrenciesViewModel @Inject constructor(
             }
         }
     }
+
+    fun savePickedCurrency(currency: String) {
+        sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENCY, currency).apply()
+    }
+
+    fun loadPickedCurrency() = sharedPreferences.getString(
+        SHARED_PREFERENCES_CURRENCY,
+        SHARED_PREFERENCES_DEFAULT_CURRENCY
+    )
 }

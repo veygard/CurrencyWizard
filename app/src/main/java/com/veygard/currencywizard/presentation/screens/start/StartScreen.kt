@@ -23,7 +23,6 @@ import com.veygard.currencywizard.presentation.screens.destinations.AllCurrencie
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.ui.SpacingVertical
 
-@ExperimentalMaterialApi
 @Composable
 @Destination(start = true)
 fun StartScreen(

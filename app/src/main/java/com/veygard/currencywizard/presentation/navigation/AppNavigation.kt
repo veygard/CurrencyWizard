@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.veygard.currencywizard.presentation.screens.NavGraphs
 
-@ExperimentalMaterialApi
 @Composable
 fun AppNavigation(
     navController: NavHostController,

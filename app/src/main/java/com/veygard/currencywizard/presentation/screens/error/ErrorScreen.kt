@@ -23,7 +23,6 @@ import com.veygard.currencywizard.presentation.ui.components.CommonButton
 import com.veygard.currencywizard.R
 import com.veygard.currencywizard.presentation.screens.destinations.AllCurrenciesScreenDestination
 
-@ExperimentalMaterialApi
 @Composable
 @Destination
 fun ErrorScreen(
