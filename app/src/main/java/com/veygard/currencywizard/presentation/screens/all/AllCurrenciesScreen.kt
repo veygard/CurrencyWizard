@@ -57,19 +57,14 @@ fun AllCurrenciesScreen(
         AllCurrenciesState.ConnectionError -> navigator.navigate(ErrorScreenDestination)
         AllCurrenciesState.ListError -> navigator.navigate(ErrorScreenDestination)
         AllCurrenciesState.NoLocalDb -> navigator.navigate(StartScreenDestination)
-        AllCurrenciesState.Loading -> Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) { CircularProgressIndicator() }
-
-        is AllCurrenciesState.CurrencyListReady -> {
+        is AllCurrenciesState.CurrencyListReady, AllCurrenciesState.Loading -> {
             AllCurrenciesScreenContent(
                 navigator,
-                (screenState.value as AllCurrenciesState.CurrencyListReady).list,
                 viewModel.totalList.value,
                 onFavoriteClick,
                 onCurrencyClick,
-                pickedCurrency
+                pickedCurrency,
+                screenState
             )
         }
     }
@@ -79,11 +74,11 @@ fun AllCurrenciesScreen(
 @Composable
 private fun AllCurrenciesScreenContent(
     navigator: DestinationsNavigator,
-    currencies: List<Currency>,
     totalList: List<Currency>?,
     onFavoriteClick: (String, Boolean) -> Unit,
     onCurrencyClick: (String) -> Unit,
     pickedCurrency: State<String?>,
+    screenState: State<AllCurrenciesState?>,
 ) {
     Scaffold(
         bottomBar = { BottomBar(navigator, provideBottomBarScreenList(), BottomBarScreen.All) }
@@ -99,7 +94,17 @@ private fun AllCurrenciesScreenContent(
                     .padding(start = Margin.horizontalStandard, end = Margin.horizontalStandard)
             ) {
                 TopBarContent(totalList, onCurrencyClick, pickedCurrency)
-                CurrencyListCompose(currencies = currencies, onFavoriteClick = onFavoriteClick)
+                when (screenState.value) {
+                    AllCurrenciesState.Loading -> Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) { CircularProgressIndicator() }
+                    is AllCurrenciesState.CurrencyListReady -> CurrencyListCompose(
+                        currencies = (screenState.value as AllCurrenciesState.CurrencyListReady).list,
+                        onFavoriteClick = onFavoriteClick
+                    )
+                    else -> {}
+                }
             }
         }
     }
@@ -112,7 +117,7 @@ private fun TopBarContent(
     pickedCurrency: State<String?>,
 ) {
     val showSearchBarState = remember { mutableStateOf(false) }
-    Log.d("testing_something","picked: ${pickedCurrency.value}")
+    Log.d("testing_something", "picked: ${pickedCurrency.value}")
     Column {
         AnimatedVisibility(
             visible = showSearchBarState.value,

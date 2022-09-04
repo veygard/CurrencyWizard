@@ -10,6 +10,7 @@ import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.domain.network.response.CurrenciesFetchRepoResponse
 import com.veygard.currencywizard.domain.network.usecase.CurrenciesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -56,7 +57,7 @@ class AllCurrenciesViewModel @Inject constructor(
     fun fetchAll() {
         viewModelScope.launch {
             _stateFlow.update { AllCurrenciesState.Loading }
-
+            delay(1000) //demonstration purpose
             val fromCurrency = loadPickedCurrency()
 
             val result = currenciesUseCases.fetchAllUseCase.execute(
