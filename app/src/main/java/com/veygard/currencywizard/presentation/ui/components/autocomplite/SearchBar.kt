@@ -2,6 +2,7 @@ package com.veygard.currencywizard.presentation.ui.components.autocomplite
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -10,13 +11,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -44,12 +44,18 @@ fun SearchBarWithAutoComplete(
     val autoCompileList: MutableState<MutableList<Currency>> =
         remember { mutableStateOf(originalList.toMutableList()) }
 
+    val focusRequester = FocusRequester()
+
+    LaunchedEffect(key1 = showSearchBarState.value, block = {
+        focusRequester.requestFocus()
+    })
     val errorState = remember { mutableStateOf(false) }
     Column(modifier = modifier) {
         OutlinedTextField(
             isError = errorState.value,
             modifier = Modifier
                 .fillMaxWidth()
+                .focusRequester(focusRequester)
                 .onFocusChanged {
                     if (it.isFocused) openState.value = true
                 },
