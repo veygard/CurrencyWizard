@@ -8,7 +8,7 @@ data class CurrenciesConvertApiResponse(
 )
 
 data class ConvertCurrenciesResult(
-    val currencyName: String,
+    val currencyTo: String,
     val value: Double,
     val rate: Double
 )

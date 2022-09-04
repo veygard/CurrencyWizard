@@ -11,6 +11,7 @@ import javax.inject.Singleton
 
 const val SHARED_PREFERENCES_NAME = "wizzPref"
 const val SHARED_PREFERENCES_CURRENCY = "wizzPrefCurrency"
+const val SHARED_PREFERENCES_CURRENCY_CONVERT = "wizzConvertPrefCurrency"
 const val SHARED_PREFERENCES_DEFAULT_CURRENCY = "USD"
 @Module
 @InstallIn(SingletonComponent::class)

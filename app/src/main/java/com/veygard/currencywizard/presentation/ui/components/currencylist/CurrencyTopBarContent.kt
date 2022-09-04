@@ -55,10 +55,7 @@ fun CurrencyTopBarContent(
         ) {
             SearchBarWithAutoComplete(
                 modifier = Modifier
-                    .padding(
-                        start = Margin.horizontalStandard,
-                        end = Margin.horizontalStandard
-                    ),
+                    .fillMaxWidth(),
                 totalList = totalList ?: emptyList(),
                 onCurrencyClick = onCurrencyClick,
                 onFavoriteClick = onFavoriteClick,

@@ -90,27 +90,6 @@ class AllCurrenciesViewModel @Inject constructor(
         }
     }
 
-    fun fetchMulti() {
-        viewModelScope.launch {
-            delay(1000) //demonstration purpose
-            val fromCurrency = loadPickedCurrency()
-
-            val to = localCurrenciesRepository.getFavoriteCurrencies(true)?.map { it.abbreviation }
-                ?.joinToString(separator = ",")
-
-            val result = currenciesUseCases.fetchMultiUseCase.execute(
-                fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY, to ?: ""
-            )
-            when (result) {
-                is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.update { AllCurrenciesState.CurrencyListReady(result.fetch) }
-                    originalList = result.fetch.toMutableList()
-                }
-                else -> _stateFlow.update { AllCurrenciesState.ConnectionError }
-            }
-        }
-    }
-
     fun sortByType(type: SortingTypes) {
         viewModelScope.launch {
             when (type) {

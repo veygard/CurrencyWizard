@@ -14,4 +14,14 @@
     <string name="currencies_list_title">Exchange rate:</string>
     <string name="currencies_top_title">Pick currency:</string>
     <string name="empty_favorites_currencies">List of favorite currencies are empty!</string>
+    <string name="convert_currency_title">Convert currency</string>
+    <string name="convert_currency_title_result">Converting result</string>
+    <string name="convert_currency_from_title">Pick currency:</string>
+    <string name="convert_currency_amount">Enter amount:</string>
+    <string name="convert_currency_to">Pick currency to convert:</string>
+    <string name="convert_currency_button">Convert</string>
+    <string name="convert_currency_again_button">Try again</string>
+    <string name="convert_currency_is">Is:</string>
+    <string name="convert_currency_result_converted_from">Currency:</string>
+    <string name="convert_currency_result_converted_to">Currency:</string>
 </resources>

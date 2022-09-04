@@ -35,7 +35,7 @@ class ConvertResultDeserializer : JsonDeserializer<CurrenciesConvertApiResponse>
         return CurrenciesConvertApiResponse(
             base = base,
             ms = ms,
-            result = ConvertCurrenciesResult(currencyName= currencyName!!, value=value!!,rate!!),
+            result = ConvertCurrenciesResult(currencyTo= currencyName!!, value=value!!,rate!!),
             amount = amount
         )
     }

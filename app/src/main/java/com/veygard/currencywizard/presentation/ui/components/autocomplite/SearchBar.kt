@@ -39,7 +39,7 @@ fun SearchBarWithAutoComplete(
     modifier: Modifier = Modifier,
     totalList: List<Currency>,
     onCurrencyClick: (String) -> Unit,
-    onFavoriteClick: (String, Boolean) -> Unit,
+    onFavoriteClick: ((String, Boolean) -> Unit)? = null,
     showSearchBarState: MutableState<Boolean>
 ) {
     val openState = remember { mutableStateOf(false) }
@@ -54,11 +54,16 @@ fun SearchBarWithAutoComplete(
         focusRequester.requestFocus()
     })
     val errorState = remember { mutableStateOf(false) }
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier
+            .padding(
+                start = Margin.horizontalStandard,
+                end = Margin.horizontalStandard
+            )
+    ) {
         OutlinedTextField(
             isError = errorState.value,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = modifier
                 .focusRequester(focusRequester)
                 .onFocusChanged {
                     if (it.isFocused) openState.value = true
@@ -131,7 +136,7 @@ fun SearchBarWithAutoComplete(
                         openState = openState,
                         showSearchBarState = showSearchBarState,
                         onClickName = onCurrencyClick,
-                        onFavoriteClick=onFavoriteClick
+                        onFavoriteClick = onFavoriteClick
                     )
                     SpacingVertical(heightDp = 12)
                 })
@@ -146,14 +151,13 @@ private fun SearchItem(
     openState: MutableState<Boolean>,
     showSearchBarState: MutableState<Boolean>,
     onClickName: (String) -> Unit,
-    onFavoriteClick: (String, Boolean) -> Unit
+    onFavoriteClick: ((String, Boolean) -> Unit)? = null,
 ) {
     val favoriteState = remember { mutableStateOf(currency.isFavorite) }
 
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
-            .fillMaxWidth()
             .clickable {
                 openState.value = false
                 showSearchBarState.value = false
@@ -176,27 +180,29 @@ private fun SearchItem(
         )
         SpacingHorizontal(WidthDp = 14)
         Text(text = currency.abbreviation, style = Paragraph_16)
-        SpacingHorizontal(WidthDp = 24)
-        Box(modifier = Modifier.weight(0.5f), contentAlignment = Alignment.CenterEnd) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(if ((favoriteState.value)) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24)
-                    .crossfade(true)
-                    .build(),
-                placeholder = painterResource(R.drawable.ic_baseline_star_border_24),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable {
-                        openState.value = false
-                        showSearchBarState.value = false
-                        favoriteState.value = !favoriteState.value
-                        onFavoriteClick(currency.abbreviation, favoriteState.value)
-                    }
-                    .size(24.dp),
-                error = painterResource(R.drawable.ic_baseline_star_border_24),
-            )
+        onFavoriteClick?.let {
+            SpacingHorizontal(WidthDp = 24)
+            Box(modifier = Modifier.weight(0.5f), contentAlignment = Alignment.CenterEnd) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(if ((favoriteState.value)) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24)
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(R.drawable.ic_baseline_star_border_24),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable {
+                            openState.value = false
+                            showSearchBarState.value = false
+                            favoriteState.value = !favoriteState.value
+                            onFavoriteClick(currency.abbreviation, favoriteState.value)
+                        }
+                        .size(24.dp),
+                    error = painterResource(R.drawable.ic_baseline_star_border_24),
+                )
+            }
         }
     }
 
