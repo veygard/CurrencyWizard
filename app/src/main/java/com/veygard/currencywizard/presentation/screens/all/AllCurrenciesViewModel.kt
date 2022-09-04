@@ -3,12 +3,10 @@ package com.veygard.currencywizard.presentation.screens.all
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.veygard.currencywizard.data.local.CurrencyEntity
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_DEFAULT_CURRENCY
 import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizard.domain.model.Currency
-import com.veygard.currencywizard.domain.network.response.CurrenciesConvertRepoResponse
 import com.veygard.currencywizard.domain.network.response.CurrenciesFetchRepoResponse
 import com.veygard.currencywizard.domain.network.usecase.CurrenciesUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +26,9 @@ class AllCurrenciesViewModel @Inject constructor(
     private val _stateFlow = MutableStateFlow<AllCurrenciesState?>(null)
     val stateFlow: StateFlow<AllCurrenciesState?> = _stateFlow
 
+    private val _pickedCurrency = MutableStateFlow<String?>(null)
+    val pickedCurrency: StateFlow<String?> = _pickedCurrency
+
     private val _totalList = MutableStateFlow<List<Currency>?>(null)
     val totalList: StateFlow<List<Currency>?> = _totalList
 
@@ -46,23 +47,31 @@ class AllCurrenciesViewModel @Inject constructor(
         }
     }
 
-    fun fetchAll() {
+    fun fetchAll(currency: String? = null) {
         viewModelScope.launch {
             _stateFlow.update { AllCurrenciesState.Loading }
-            val fromCurrency = loadPickedCurrency()
+
+            val fromCurrency = currency?.let {
+                savePickedCurrency(it)
+                it
+            } ?: run{
+                loadPickedCurrency()
+                _pickedCurrency.value
+            }
+
             val result = currenciesUseCases.fetchAllUseCase.execute(
                 fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY
             )
             when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.update {  AllCurrenciesState.CurrencyListReady(result.fetch) }
+                    _stateFlow.update { AllCurrenciesState.CurrencyListReady(result.fetch) }
                 }
                 else -> _stateFlow.update { AllCurrenciesState.ConnectionError }
             }
         }
     }
 
-    fun changeFavoriteState(currency: String, isFavorite: Boolean){
+    fun changeFavoriteState(currency: String, isFavorite: Boolean) {
         viewModelScope.launch {
             localCurrenciesRepository.updateCurrencyByAbbreviation(currency, isFavorite)
         }
@@ -95,8 +104,12 @@ class AllCurrenciesViewModel @Inject constructor(
         sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENCY, currency).apply()
     }
 
-    fun loadPickedCurrency() = sharedPreferences.getString(
-        SHARED_PREFERENCES_CURRENCY,
-        SHARED_PREFERENCES_DEFAULT_CURRENCY
-    )
+    fun loadPickedCurrency() {
+        _pickedCurrency.update {
+            sharedPreferences.getString(
+                SHARED_PREFERENCES_CURRENCY,
+                SHARED_PREFERENCES_DEFAULT_CURRENCY
+            )
+        }
+    }
 }

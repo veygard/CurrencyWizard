@@ -1,32 +1,30 @@
 package com.veygard.currencywizard.presentation.screens.all
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.veygard.currencywizard.data.local.CurrencyEntity
 import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.presentation.navigation.BottomBarScreen
 import com.veygard.currencywizard.presentation.navigation.provideBottomBarScreenList
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.screens.destinations.StartScreenDestination
 import com.veygard.currencywizard.presentation.ui.Margin
-import com.veygard.currencywizard.presentation.ui.Paragraph_16_Medium
 import com.veygard.currencywizard.presentation.ui.SpacingVertical
 import com.veygard.currencywizard.presentation.ui.components.BottomBar
 import com.veygard.currencywizard.presentation.ui.components.CurrencyListCompose
-import com.veygard.currencywizard.presentation.ui.components.autocomplite.TextSearchBarWithAutoComplete
+import com.veygard.currencywizard.presentation.ui.components.autocomplite.SearchBarWithAutoComplete
 
 @Composable
 @Destination
@@ -43,6 +41,11 @@ fun AllCurrenciesScreen(
         viewModel.changeFavoriteState(currency, isFavorite)
     }
 
+    val onCurrencyClick: (String) -> Unit = { currency ->
+        viewModel.fetchAll(currency)
+    }
+
+
     when (screenState.value) {
         null -> {}
         AllCurrenciesState.ConnectionError -> navigator.navigate(ErrorScreenDestination)
@@ -58,7 +61,8 @@ fun AllCurrenciesScreen(
                 navigator,
                 (screenState.value as AllCurrenciesState.CurrencyListReady).list,
                 viewModel.totalList.value,
-                onFavoriteClick
+                onFavoriteClick,
+                onCurrencyClick
             )
         }
     }
@@ -66,11 +70,12 @@ fun AllCurrenciesScreen(
 }
 
 @Composable
-fun AllCurrenciesScreenContent(
+private fun AllCurrenciesScreenContent(
     navigator: DestinationsNavigator,
     currencies: List<Currency>,
     totalList: List<Currency>?,
-    onFavoriteClick: (String, Boolean) -> Unit
+    onFavoriteClick: (String, Boolean) -> Unit,
+    onCurrencyClick: (String) -> Unit,
 ) {
     Scaffold(
         bottomBar = { BottomBar(navigator, provideBottomBarScreenList(), BottomBarScreen.All) }
@@ -80,13 +85,12 @@ fun AllCurrenciesScreenContent(
         ), onRefresh = {
 
         }) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                TextSearchBarWithAutoComplete(modifier = Modifier
-                    .padding(
-                        start = Margin.horizontalStandard,
-                        end = Margin.horizontalStandard
-                    ), totalList = totalList ?: emptyList(), onClickName = {})
-                SpacingVertical(heightDp = 16)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = Margin.horizontalStandard, end = Margin.horizontalStandard)
+            ) {
+                TopBarContent(totalList, onCurrencyClick)
                 CurrencyListCompose(currencies = currencies, onFavoriteClick = onFavoriteClick)
             }
         }
@@ -94,13 +98,44 @@ fun AllCurrenciesScreenContent(
 }
 
 @Composable
-fun CurrencyAutoCompleteItem(currency: CurrencyEntity) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(text = currency.abbreviation, style = Paragraph_16_Medium)
+private fun TopBarContent(
+    totalList: List<Currency>?,
+    onCurrencyClick: (String) -> Unit,
+) {
+    val showSearchBarState = remember { mutableStateOf(false) }
+
+    Column {
+        AnimatedVisibility(
+            visible = showSearchBarState.value,
+            enter = fadeIn(animationSpec = tween(500)) +
+                    expandVertically(
+                        animationSpec = tween(
+                            500,
+                        )
+                    ),
+            exit = fadeOut(animationSpec = tween(500)) +
+                    shrinkVertically(
+                        animationSpec = tween(
+                            500,
+                        )
+                    )
+        ) {
+            SearchBarWithAutoComplete(
+                modifier = Modifier
+                    .padding(
+                        start = Margin.horizontalStandard,
+                        end = Margin.horizontalStandard
+                    ),
+                totalList = totalList ?: emptyList(),
+                onCurrencyClick = onCurrencyClick,
+                showSearchBarState = showSearchBarState
+            )
+
+        }
+        if (!showSearchBarState.value) {
+
+        }
     }
 }
+
+
