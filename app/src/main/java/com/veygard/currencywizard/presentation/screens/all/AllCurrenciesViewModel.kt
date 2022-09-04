@@ -9,6 +9,8 @@ import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesReposit
 import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.domain.network.response.CurrenciesFetchRepoResponse
 import com.veygard.currencywizard.domain.network.usecase.CurrenciesUseCases
+import com.veygard.currencywizard.presentation.model.SortingOrder
+import com.veygard.currencywizard.presentation.model.SortingTypes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,10 +35,18 @@ class AllCurrenciesViewModel @Inject constructor(
     private val _totalList = MutableStateFlow<List<Currency>?>(null)
     val totalList: StateFlow<List<Currency>?> = _totalList
 
+    private val _sortedBy = MutableStateFlow(SortingTypes.ABC)
+    val sortedBy: StateFlow<SortingTypes> = _sortedBy
+    private val _sortedOrder = MutableStateFlow(SortingOrder.ASCENDING)
+    val sortedOrder: StateFlow<SortingOrder> = _sortedOrder
+
+    private var originalList: MutableList<Currency>? = null
+
     init {
         getLocalCurrenciesList()
         loadPickedCurrency()
     }
+
 
     private fun getLocalCurrenciesList() {
         viewModelScope.launch {
@@ -49,7 +59,7 @@ class AllCurrenciesViewModel @Inject constructor(
         }
     }
 
-    fun updatePickedCurrency(currency: String){
+    fun updatePickedCurrency(currency: String) {
         storePickedCurrency(currency)
         _pickedCurrency.update { currency }
     }
@@ -66,6 +76,7 @@ class AllCurrenciesViewModel @Inject constructor(
             when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
                     _stateFlow.update { AllCurrenciesState.CurrencyListReady(result.fetch) }
+                    originalList = result.fetch.toMutableList()
                 }
                 else -> _stateFlow.update { AllCurrenciesState.ConnectionError }
             }
@@ -100,6 +111,61 @@ class AllCurrenciesViewModel @Inject constructor(
 //            }
 //        }
 //    }
+
+    fun sortByType(type: SortingTypes) {
+        viewModelScope.launch {
+            when (type) {
+                SortingTypes.ABC -> {
+                    _sortedBy.update { SortingTypes.ABC }
+                    _stateFlow.update {
+                        sortByAbc(
+                            originalList
+                        )?.let {
+                            AllCurrenciesState.CurrencyListReady(
+                                it
+                            )
+                        } ?: AllCurrenciesState.ListError
+                    }
+                }
+                SortingTypes.VALUE -> {
+                    _sortedBy.update { SortingTypes.VALUE }
+                    _stateFlow.update {
+                        sortByValue(
+                            originalList
+                        )?.let {
+                            AllCurrenciesState.CurrencyListReady(
+                                it
+                            )
+                        } ?: AllCurrenciesState.ListError
+                    }
+                }
+            }
+        }
+    }
+
+    fun sortByOder(order: SortingOrder) {
+        viewModelScope.launch {
+            when (order) {
+                SortingOrder.ASCENDING -> _sortedOrder.update { SortingOrder.ASCENDING }
+                SortingOrder.DESCENDING -> _sortedOrder.update { SortingOrder.DESCENDING }
+            }
+            sortByType(_sortedBy.value)
+        }
+    }
+
+    private fun sortByAbc(list: List<Currency>?): List<Currency>? = list?.let {
+        return when(sortedOrder.value) {
+            SortingOrder.DESCENDING -> list.sortedByDescending { it.abbreviation }
+            SortingOrder.ASCENDING -> list.sortedBy { it.abbreviation }
+        }
+    }
+
+    private fun sortByValue(list: List<Currency>?): List<Currency>? = list?.let {
+        return when(sortedOrder.value) {
+            SortingOrder.DESCENDING -> list.sortedByDescending { it.value?.toDouble() }
+            SortingOrder.ASCENDING -> list.sortedBy { it.value?.toDouble() }
+        }
+    }
 
     private fun storePickedCurrency(currency: String) {
         sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENCY, currency).apply()

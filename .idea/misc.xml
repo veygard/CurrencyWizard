@@ -3,7 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/_AndroidStudioProjects/_pet/CurrencyWizard/app/src/main/res/drawable-v24/sort_ascending_svgrepo_com__2_.xml" value="0.1595" />
+        <entry key="..\:/_AndroidStudioProjects/_pet/CurrencyWizard/app/src/main/res/drawable-v24/sort_descending.xml" value="0.1595" />
         <entry key="..\:/_AndroidStudioProjects/_pet/CurrencyWizard/app/src/main/res/drawable/ic_baseline_currency_exchange_24.xml" value="0.1595" />
+        <entry key="..\:/_AndroidStudioProjects/_pet/CurrencyWizard/app/src/main/res/drawable/ic_no_wifi_svgrepo_com.xml" value="0.1595" />
         <entry key="..\:/_AndroidStudioProjects/_pet/CurrencyWizzard/app/src/main/res/drawable/ic_no_wifi_svgrepo_com.xml" value="0.161" />
       </map>
     </option>

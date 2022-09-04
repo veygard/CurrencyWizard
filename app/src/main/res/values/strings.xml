@@ -8,6 +8,9 @@
     <string name="try_again">Try it again</string>
     <string name="currency_error_search">No currency found. Please search again</string>
     <string name="currency_pick_hint">Choose currency from list</string>
+    <string name="radio_button_abc">Alphabetically</string>
+    <string name="radio_button_value">By the value</string>
+    <string name="bottom_sheet_sort_title">Sorting</string>
 
 
 

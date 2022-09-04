@@ -20,7 +20,7 @@ fun CurrencyApi.toEntity() =
 
 fun List<CurrencyApi>.toEntityList() = map { it.toEntity() }
 
-fun CurrencyApi.toStuffed(
+fun CurrencyApi.toCurrency(
     value: String,
     isFavorite: Boolean,
     flagId: Int,

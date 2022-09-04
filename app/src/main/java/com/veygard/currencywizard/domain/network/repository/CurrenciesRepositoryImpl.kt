@@ -7,7 +7,7 @@ import com.veygard.currencywizard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizard.data.network.api.CurrenciesGetAllApi
 import com.veygard.currencywizard.data.network.model.currencies.CurrencyApi
 import com.veygard.currencywizard.data.network.model.currencies.toEntityList
-import com.veygard.currencywizard.data.network.model.currencies.toStuffed
+import com.veygard.currencywizard.data.network.model.currencies.toCurrency
 import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.domain.network.response.CurrenciesConvertRepoResponse
@@ -112,7 +112,7 @@ class CurrenciesRepositoryImpl(
                 val flag = FlagKit.getResId(context, currency.name.substring(0, 2))
                 try {
                     stuffedList.add(
-                        currency.toStuffed(
+                        currency.toCurrency(
                             value = currency.value.round() ?: return null,
                             isFavorite = isFavorite ?: return null,
                             flagId = flag,
