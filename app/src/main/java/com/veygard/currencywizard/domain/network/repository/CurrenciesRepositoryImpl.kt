@@ -135,10 +135,12 @@ class CurrenciesRepositoryImpl(
         networkList: List<CurrencyApi>?,
         favorites: List<Currency>?
     ) {
+        networkList?.forEach {
+            it.flagId = FlagKit.getResId(context, it.name.substring(0,2) ?: return)
+        }
         favorites?.forEach { entity ->
             val currency = networkList?.singleOrNull { it.name == entity.abbreviation }
             currency?.isFavorite = entity.isFavorite
-            currency?.flagId = FlagKit.getResId(context, currency?.name?.substring(0,2) ?: return)
         }
         localDbRepository.insertAllCurrencies(networkList?.toEntityList() ?: return)
     }
