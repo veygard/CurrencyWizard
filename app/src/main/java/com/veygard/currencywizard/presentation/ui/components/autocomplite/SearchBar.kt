@@ -4,7 +4,6 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +39,7 @@ fun SearchBarWithAutoComplete(
     modifier: Modifier = Modifier,
     totalList: List<Currency>,
     onCurrencyClick: (String) -> Unit,
+    onFavoriteClick: (String, Boolean) -> Unit,
     showSearchBarState: MutableState<Boolean>
 ) {
     val openState = remember { mutableStateOf(false) }
@@ -130,7 +130,8 @@ fun SearchBarWithAutoComplete(
                         currency = autoCompileList.value[index],
                         openState = openState,
                         showSearchBarState = showSearchBarState,
-                        onClickName = onCurrencyClick
+                        onClickName = onCurrencyClick,
+                        onFavoriteClick=onFavoriteClick
                     )
                     SpacingVertical(heightDp = 12)
                 })
@@ -144,8 +145,11 @@ private fun SearchItem(
     currency: Currency,
     openState: MutableState<Boolean>,
     showSearchBarState: MutableState<Boolean>,
-    onClickName: (String) -> Unit
+    onClickName: (String) -> Unit,
+    onFavoriteClick: (String, Boolean) -> Unit
 ) {
+    val favoriteState = remember { mutableStateOf(currency.isFavorite) }
+
     Row(verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
@@ -172,7 +176,30 @@ private fun SearchItem(
         )
         SpacingHorizontal(WidthDp = 14)
         Text(text = currency.abbreviation, style = Paragraph_16)
+        SpacingHorizontal(WidthDp = 24)
+        Box(modifier = Modifier.weight(0.5f), contentAlignment = Alignment.CenterEnd) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(if ((favoriteState.value)) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24)
+                    .crossfade(true)
+                    .build(),
+                placeholder = painterResource(R.drawable.ic_baseline_star_border_24),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .clickable {
+                        openState.value = false
+                        showSearchBarState.value = false
+                        favoriteState.value = !favoriteState.value
+                        onFavoriteClick(currency.abbreviation, favoriteState.value)
+                    }
+                    .size(24.dp),
+                error = painterResource(R.drawable.ic_baseline_star_border_24),
+            )
+        }
     }
+
 }
 
 private fun getListBySearch(

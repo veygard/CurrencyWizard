@@ -16,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -67,16 +68,24 @@ class FavoriteCurrenciesViewModel @Inject constructor(
     }
 
 
-    fun changeFavoriteState(currency: String, isFavorite: Boolean) {
+    fun changeFavoriteState(query: String, isFavorite: Boolean) {
         viewModelScope.launch {
-            localCurrenciesRepository.updateCurrencyByAbbreviation(currency, isFavorite)
-            if (!isFavorite) {
-                val removedCurrency = originalList?.singleOrNull { it.abbreviation == currency }
-                originalList?.remove(removedCurrency)
-                _stateFlow.update {
-                    FavoriteCurrenciesState.CurrencyListReady(
-                        originalList?.toList() ?: return@launch
-                    )
+            localCurrenciesRepository.updateCurrencyByAbbreviation(query, isFavorite)
+            val currency = _totalList.value?.singleOrNull { it.abbreviation == query }
+            currency?.isFavorite = isFavorite
+
+            when (isFavorite) {
+                true -> {
+                    fetchMulti()
+                }
+                false -> {
+                    val currency = originalList?.singleOrNull { it.abbreviation == query }
+                    originalList?.remove(currency)
+                    _stateFlow.update {
+                        FavoriteCurrenciesState.CurrencyListReady(
+                            originalList?.toList() ?: return@launch
+                        )
+                    }
                 }
             }
         }

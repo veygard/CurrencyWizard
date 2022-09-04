@@ -32,6 +32,7 @@ fun CurrencyListCompose(
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 16.dp)
             .background(MaterialTheme.colors.background),
         contentPadding = PaddingValues(vertical = 24.dp)
     ) {
@@ -93,7 +94,10 @@ private fun CurrencyItem(currency: Currency, onFavoriteClick: (String, Boolean) 
             Box(modifier = Modifier.weight(0.5f), contentAlignment = Alignment.CenterEnd) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(if ((favoriteState.value)) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24)
+                        .data(
+                            if ((favoriteState.value)) R.drawable.ic_baseline_star_24
+                            else R.drawable.ic_baseline_star_border_24
+                        )
                         .crossfade(true)
                         .build(),
                     placeholder = painterResource(R.drawable.ic_baseline_star_border_24),
@@ -102,8 +106,7 @@ private fun CurrencyItem(currency: Currency, onFavoriteClick: (String, Boolean) 
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable {
-                            favoriteState.value = !favoriteState.value
-                            onFavoriteClick(currency.abbreviation, favoriteState.value)
+                            onFavoriteClick(currency.abbreviation, !favoriteState.value)
                         }
                         .size(36.dp),
                     error = painterResource(R.drawable.ic_baseline_star_border_24),

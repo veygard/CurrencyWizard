@@ -33,10 +33,10 @@ fun CurrencyTopBarContent(
     bottomSheetScaffoldState: BottomSheetScaffoldState,
     coroutine: CoroutineScope,
     sortByOrderClick: () -> Unit,
+    onFavoriteClick: (String, Boolean) -> Unit,
     sortedOrderState: SortingOrder,
 ) {
     val showSearchBarState = remember { mutableStateOf(false) }
-    Log.d("testing_something", "picked: ${pickedCurrency.value}")
     Column {
         AnimatedVisibility(
             visible = showSearchBarState.value,
@@ -61,6 +61,7 @@ fun CurrencyTopBarContent(
                     ),
                 totalList = totalList ?: emptyList(),
                 onCurrencyClick = onCurrencyClick,
+                onFavoriteClick = onFavoriteClick,
                 showSearchBarState = showSearchBarState
             )
         }

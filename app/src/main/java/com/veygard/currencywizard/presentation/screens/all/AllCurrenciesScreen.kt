@@ -22,6 +22,7 @@ import com.veygard.currencywizard.presentation.navigation.provideBottomBarScreen
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.screens.destinations.StartScreenDestination
 import com.veygard.currencywizard.presentation.ui.Margin
+import com.veygard.currencywizard.presentation.ui.SpacingVertical
 import com.veygard.currencywizard.presentation.ui.components.BottomBar
 import com.veygard.currencywizard.presentation.ui.components.currencylist.CurrencyListCompose
 import com.veygard.currencywizard.presentation.ui.components.currencylist.CurrencyTopBarContent
@@ -137,13 +138,14 @@ private fun AllCurrenciesScreenContent(
                         .padding(start = Margin.horizontalStandard, end = Margin.horizontalStandard)
                 ) {
                     CurrencyTopBarContent(
-                        totalList,
-                        onCurrencyClick,
-                        pickedCurrency,
-                        bottomSheetScaffoldState,
-                        coroutine,
-                        sortByOrderClick,
-                        sortedOrderState
+                        totalList=totalList,
+                        onCurrencyClick=onCurrencyClick,
+                        pickedCurrency=pickedCurrency,
+                        bottomSheetScaffoldState=bottomSheetScaffoldState,
+                        coroutine=coroutine,
+                        sortByOrderClick=sortByOrderClick,
+                        onFavoriteClick=onFavoriteClick,
+                        sortedOrderState=sortedOrderState
                     )
                     when (screenState.value) {
                         AllCurrenciesState.Loading -> Box(
