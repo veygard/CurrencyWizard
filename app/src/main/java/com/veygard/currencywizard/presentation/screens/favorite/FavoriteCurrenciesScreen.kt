@@ -10,7 +10,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -21,7 +23,6 @@ import com.veygard.currencywizard.presentation.model.SortingOrder
 import com.veygard.currencywizard.presentation.model.SortingTypes
 import com.veygard.currencywizard.presentation.navigation.BottomBarScreen
 import com.veygard.currencywizard.presentation.navigation.provideBottomBarScreenList
-import com.veygard.currencywizard.presentation.screens.all.*
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.ui.H_L4
 import com.veygard.currencywizard.presentation.ui.H_L5
@@ -70,7 +71,10 @@ fun FavoriteCurrenciesScreen(
     when (screenState.value) {
         FavoriteCurrenciesState.ConnectionError -> navigator.navigate(ErrorScreenDestination)
         FavoriteCurrenciesState.ListError -> navigator.navigate(ErrorScreenDestination)
-        is FavoriteCurrenciesState.CurrencyListReady, FavoriteCurrenciesState.Loading -> {
+
+        is FavoriteCurrenciesState.CurrencyListReady,
+        FavoriteCurrenciesState.Loading,
+        FavoriteCurrenciesState.FavoritesEmpty -> {
             FavoriteCurrenciesScreenContent(
                 navigator = navigator,
                 totalList = viewModel.totalList.value,
@@ -111,7 +115,10 @@ private fun FavoriteCurrenciesScreenContent(
 
     BottomSheetScaffold(
         sheetContent = {
-            SortingBottomSheetContent(sortByTypeClick = sortByTypeClick, sortedByState = sortedByState)
+            SortingBottomSheetContent(
+                sortByTypeClick = sortByTypeClick,
+                sortedByState = sortedByState
+            )
             BackHandler(enabled = true) {
                 coroutine.launch {
                     bottomSheetScaffoldState.bottomSheetState.collapse()
@@ -144,14 +151,14 @@ private fun FavoriteCurrenciesScreenContent(
                     Text(text = stringResource(id = R.string.currencies_top_title), style = H_L5)
                     SpacingVertical(heightDp = 4)
                     CurrencyTopBarContent(
-                        totalList=totalList,
-                        onCurrencyClick=onCurrencyClick,
-                        pickedCurrency=pickedCurrency,
-                        bottomSheetScaffoldState=bottomSheetScaffoldState,
-                        coroutine=coroutine,
-                        sortByOrderClick=sortByOrderClick,
-                        onFavoriteClick=onFavoriteClick,
-                        sortedOrderState=sortedOrderState
+                        totalList = totalList,
+                        onCurrencyClick = onCurrencyClick,
+                        pickedCurrency = pickedCurrency,
+                        bottomSheetScaffoldState = bottomSheetScaffoldState,
+                        coroutine = coroutine,
+                        sortByOrderClick = sortByOrderClick,
+                        onFavoriteClick = onFavoriteClick,
+                        sortedOrderState = sortedOrderState
                     )
                     SpacingVertical(heightDp = 8)
                     when (screenState.value) {
@@ -160,11 +167,37 @@ private fun FavoriteCurrenciesScreenContent(
                             contentAlignment = Alignment.Center
                         ) { CircularProgressIndicator() }
                         is FavoriteCurrenciesState.CurrencyListReady -> {
-                            Text(text = stringResource(id = R.string.currencies_list_title), style = H_L5)
+                            Text(
+                                text = stringResource(id = R.string.currencies_list_title),
+                                style = H_L5
+                            )
                             CurrencyListCompose(
                                 currencies = (screenState.value as FavoriteCurrenciesState.CurrencyListReady).list,
                                 onFavoriteClick = onFavoriteClick
                             )
+                        }
+                        FavoriteCurrenciesState.FavoritesEmpty -> {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                SpacingVertical(heightDp = 16)
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_baseline_note_add_24),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(64.dp),
+                                    tint = MaterialTheme.colors.primary
+                                )
+                                SpacingVertical(heightDp = 16)
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(id = R.string.empty_favorites_currencies),
+                                    style = H_L4,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colors.onBackground
+                                )
+                            }
                         }
                         else -> {}
                     }

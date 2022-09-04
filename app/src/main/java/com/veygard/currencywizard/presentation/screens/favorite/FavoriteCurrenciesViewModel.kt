@@ -45,7 +45,6 @@ class FavoriteCurrenciesViewModel @Inject constructor(
     private var originalList: MutableList<Currency>? = null
 
     init {
-        Log.d("testing_something", "FavoriteCurrenciesViewModel")
         getLocalCurrenciesList()
         _pickedCurrency.update { loadPickedCurrency() }
     }

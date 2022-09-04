@@ -13,8 +13,5 @@
     <string name="bottom_sheet_sort_title">Sorting</string>
     <string name="currencies_list_title">Exchange rate:</string>
     <string name="currencies_top_title">Pick currency:</string>
-
-
-
-
+    <string name="empty_favorites_currencies">List of favorite currencies are empty!</string>
 </resources>

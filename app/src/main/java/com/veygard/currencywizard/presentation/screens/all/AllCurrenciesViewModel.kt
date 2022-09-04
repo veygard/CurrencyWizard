@@ -44,7 +44,6 @@ class AllCurrenciesViewModel @Inject constructor(
     private var originalList: MutableList<Currency>? = null
 
     init {
-        Log.d("testing_something","AllCurrenciesViewModel")
         getLocalCurrenciesList()
         _pickedCurrency.update { loadPickedCurrency() }
     }
