@@ -48,7 +48,7 @@ fun SearchBarWithAutoComplete(
     val autoCompileList: MutableState<MutableList<Currency>> =
         remember { mutableStateOf(originalList.toMutableList()) }
 
-    val focusRequester = FocusRequester()
+    val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = showSearchBarState.value, block = {
         focusRequester.requestFocus()

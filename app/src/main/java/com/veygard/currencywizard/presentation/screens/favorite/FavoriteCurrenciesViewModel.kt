@@ -1,4 +1,4 @@
-package com.veygard.currencywizard.presentation.screens.all
+package com.veygard.currencywizard.presentation.screens.favorite
 
 import android.content.SharedPreferences
 import android.util.Log
@@ -21,14 +21,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AllCurrenciesViewModel @Inject constructor(
+class FavoriteCurrenciesViewModel @Inject constructor(
     private val currenciesUseCases: CurrenciesUseCases,
     private val localCurrenciesRepository: LocalCurrenciesRepository,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    private val _stateFlow = MutableStateFlow<AllCurrenciesState?>(null)
-    val stateFlow: StateFlow<AllCurrenciesState?> = _stateFlow
+    private val _stateFlow = MutableStateFlow<FavoriteCurrenciesState?>(null)
+    val stateFlow: StateFlow<FavoriteCurrenciesState?> = _stateFlow
 
     private val _pickedCurrency = MutableStateFlow<String?>(null)
     val pickedCurrency: StateFlow<String?> = _pickedCurrency
@@ -44,7 +44,7 @@ class AllCurrenciesViewModel @Inject constructor(
     private var originalList: MutableList<Currency>? = null
 
     init {
-        Log.d("testing_something","AllCurrenciesViewModel")
+        Log.d("testing_something", "FavoriteCurrenciesViewModel")
         getLocalCurrenciesList()
         _pickedCurrency.update { loadPickedCurrency() }
     }
@@ -53,10 +53,10 @@ class AllCurrenciesViewModel @Inject constructor(
     private fun getLocalCurrenciesList() {
         viewModelScope.launch {
             val result = localCurrenciesRepository.getAllCurrencies()
-            if (result.isEmpty()) _stateFlow.update { AllCurrenciesState.NoLocalDb }
+            if (result.isEmpty()) _stateFlow.update { FavoriteCurrenciesState.ListError }
             else {
                 _totalList.update { result }
-                fetchAll()
+                fetchMulti()
             }
         }
     }
@@ -66,48 +66,46 @@ class AllCurrenciesViewModel @Inject constructor(
         _pickedCurrency.update { currency }
     }
 
-    fun fetchAll() {
-        viewModelScope.launch {
-            _stateFlow.update { AllCurrenciesState.Loading }
-            delay(500) //demonstration purpose
-            val fromCurrency = loadPickedCurrency()
-
-            val result = currenciesUseCases.fetchAllUseCase.execute(
-                fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY
-            )
-            when (result) {
-                is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.update { AllCurrenciesState.CurrencyListReady(result.fetch) }
-                    originalList = result.fetch.toMutableList()
-                }
-                else -> _stateFlow.update { AllCurrenciesState.ConnectionError }
-            }
-        }
-    }
 
     fun changeFavoriteState(currency: String, isFavorite: Boolean) {
         viewModelScope.launch {
             localCurrenciesRepository.updateCurrencyByAbbreviation(currency, isFavorite)
+            if (!isFavorite) {
+                val removedCurrency = originalList?.singleOrNull { it.abbreviation == currency }
+                originalList?.remove(removedCurrency)
+                _stateFlow.update {
+                    FavoriteCurrenciesState.CurrencyListReady(
+                        originalList?.toList() ?: return@launch
+                    )
+                }
+            }
         }
     }
 
     fun fetchMulti() {
         viewModelScope.launch {
-            delay(1000) //demonstration purpose
+            _stateFlow.update { FavoriteCurrenciesState.Loading }
             val fromCurrency = loadPickedCurrency()
 
-            val to = localCurrenciesRepository.getFavoriteCurrencies(true)?.map { it.abbreviation }
-                ?.joinToString(separator = ",")
+            val favoriteList =
+                localCurrenciesRepository.getFavoriteCurrencies(true)?.map { it.abbreviation }
+                    ?.joinToString(separator = ",")
+
+            if (favoriteList.isNullOrEmpty()) {
+                _stateFlow.update { FavoriteCurrenciesState.FavoritesEmpty }
+                return@launch
+            }
 
             val result = currenciesUseCases.fetchMultiUseCase.execute(
-                fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY, to ?: ""
+                fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY, favoriteList
             )
+            delay(500) //demonstration purpose
             when (result) {
                 is CurrenciesFetchRepoResponse.SuccessFetch -> {
-                    _stateFlow.update { AllCurrenciesState.CurrencyListReady(result.fetch) }
+                    _stateFlow.update { FavoriteCurrenciesState.CurrencyListReady(result.fetch) }
                     originalList = result.fetch.toMutableList()
                 }
-                else -> _stateFlow.update { AllCurrenciesState.ConnectionError }
+                else -> _stateFlow.update { FavoriteCurrenciesState.ConnectionError }
             }
         }
     }
@@ -121,10 +119,10 @@ class AllCurrenciesViewModel @Inject constructor(
                         sortByAbc(
                             originalList
                         )?.let {
-                            AllCurrenciesState.CurrencyListReady(
+                            FavoriteCurrenciesState.CurrencyListReady(
                                 it
                             )
-                        } ?: AllCurrenciesState.ListError
+                        } ?: FavoriteCurrenciesState.ListError
                     }
                 }
                 SortingTypes.VALUE -> {
@@ -133,10 +131,10 @@ class AllCurrenciesViewModel @Inject constructor(
                         sortByValue(
                             originalList
                         )?.let {
-                            AllCurrenciesState.CurrencyListReady(
+                            FavoriteCurrenciesState.CurrencyListReady(
                                 it
                             )
-                        } ?: AllCurrenciesState.ListError
+                        } ?: FavoriteCurrenciesState.ListError
                     }
                 }
             }

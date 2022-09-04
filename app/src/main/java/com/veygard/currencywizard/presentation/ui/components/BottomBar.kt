@@ -8,17 +8,21 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.veygard.currencywizard.presentation.navigation.BottomBarScreen
 
 @Composable
-fun BottomBar(navigator: DestinationsNavigator,screens: List<BottomBarScreen>, selected: BottomBarScreen) {
-        BottomNavigation {
-            screens.forEach { screen ->
-                AddItem(
-                    screen = screen,
-                    navigator = navigator,
-                    selected= selected
-                )
-            }
+fun BottomBar(
+    navigator: DestinationsNavigator,
+    screens: List<BottomBarScreen>,
+    selected: BottomBarScreen
+) {
+    BottomNavigation {
+        screens.forEach { screen ->
+            AddItem(
+                screen = screen,
+                navigator = navigator,
+                selected = selected
+            )
         }
     }
+}
 
 @Composable
 fun RowScope.AddItem(

@@ -1,4 +1,4 @@
-package com.veygard.currencywizard.presentation.ui.components
+package com.veygard.currencywizard.presentation.ui.components.currencylist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
