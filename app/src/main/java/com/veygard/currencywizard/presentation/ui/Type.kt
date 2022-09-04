@@ -36,6 +36,14 @@ val bottomBarTextStyle = TextStyle(
     textAlign = TextAlign.Start,
 )
 
+val H_L5 = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontSize = 20.sp,
+    fontWeight = FontWeight.W700,
+    lineHeight = 24.sp,
+    textAlign = TextAlign.Center,
+)
+
 val H_L4 = TextStyle(
     fontFamily = FontFamily.Default,
     fontSize = 24.sp,

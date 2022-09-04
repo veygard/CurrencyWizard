@@ -11,6 +11,8 @@
     <string name="radio_button_abc">Alphabetically</string>
     <string name="radio_button_value">By the value</string>
     <string name="bottom_sheet_sort_title">Sorting</string>
+    <string name="currencies_list_title">Exchange rate:</string>
+    <string name="currencies_top_title">Pick currency:</string>
 
 
 
