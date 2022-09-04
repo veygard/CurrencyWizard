@@ -20,7 +20,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.veygard.currencywizard.data.local.CurrencyEntity
+import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.presentation.ui.Paragraph_16
 import com.veygard.currencywizard.presentation.ui.SpacingVertical
 
@@ -28,14 +28,14 @@ import com.veygard.currencywizard.presentation.ui.SpacingVertical
 @Composable
 fun TextSearchBarWithAutoComplete(
     modifier: Modifier = Modifier,
-    list: List<CurrencyEntity>,
+    totalList: List<Currency>,
     onClickName: (String) -> Unit
 ) {
     val openState = remember { mutableStateOf(false) }
     val searchValue = remember { mutableStateOf("") }
     val autoCompileList: MutableState<MutableList<String>> =
-        remember { mutableStateOf(list.map { it.abbreviation }.toMutableList()) }
-    val originalList: List<String> = list.map { it.abbreviation }
+        remember { mutableStateOf(totalList.map { it.abbreviation }.toMutableList()) }
+    val originalList: List<String> = totalList.map { it.abbreviation }
 
 
     Column() {

@@ -16,7 +16,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.veygard.currencywizard.data.local.CurrencyEntity
-import com.veygard.currencywizard.domain.model.CurrencyStuffed
+import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.presentation.navigation.BottomBarScreen
 import com.veygard.currencywizard.presentation.navigation.provideBottomBarScreenList
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
@@ -68,8 +68,8 @@ fun AllCurrenciesScreen(
 @Composable
 fun AllCurrenciesScreenContent(
     navigator: DestinationsNavigator,
-    currencies: List<CurrencyStuffed>,
-    totalList: List<CurrencyEntity>?,
+    currencies: List<Currency>,
+    totalList: List<Currency>?,
     onFavoriteClick: (String, Boolean) -> Unit
 ) {
     Scaffold(
@@ -85,7 +85,7 @@ fun AllCurrenciesScreenContent(
                     .padding(
                         start = Margin.horizontalStandard,
                         end = Margin.horizontalStandard
-                    ), list = totalList ?: emptyList(), onClickName = {})
+                    ), totalList = totalList ?: emptyList(), onClickName = {})
                 SpacingVertical(heightDp = 16)
                 CurrencyListCompose(currencies = currencies, onFavoriteClick = onFavoriteClick)
             }

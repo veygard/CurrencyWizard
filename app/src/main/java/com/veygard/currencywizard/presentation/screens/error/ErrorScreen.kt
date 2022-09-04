@@ -61,7 +61,7 @@ fun ErrorScreen(
                 textAlign = TextAlign.Center
             )
             SpacingVertical(24.0)
-            CommonButton(label = "Перейти на страницу логина") {
+            CommonButton(label = stringResource(id = R.string.try_again)) {
                 navigator.navigate(AllCurrenciesScreenDestination)
             }
         }

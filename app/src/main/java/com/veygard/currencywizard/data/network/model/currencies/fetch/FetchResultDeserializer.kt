@@ -3,7 +3,7 @@ package com.veygard.currencywizard.data.network.model.currencies.fetch
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.veygard.currencywizard.data.network.model.currencies.Currency
+import com.veygard.currencywizard.data.network.model.currencies.CurrencyApi
 import java.lang.reflect.Type
 
 class FetchResultDeserializer : JsonDeserializer<FetchApiResponse> {
@@ -18,7 +18,7 @@ class FetchResultDeserializer : JsonDeserializer<FetchApiResponse> {
         val resultList = resultSet.map {
             val code = it.key
             val value = it.value.asString
-            Currency(code, value)
+            CurrencyApi(code, value)
         }
         val updated = context.deserialize<String?>(obj.get("updated"), String::class.java)
         val ms = context.deserialize<Int?>(obj.get("ms"), Int::class.java)

@@ -2,6 +2,9 @@ package com.veygard.currencywizard.domain.local.repository
 
 import com.veygard.currencywizard.data.local.CurrenciesDao
 import com.veygard.currencywizard.data.local.CurrencyEntity
+import com.veygard.currencywizard.data.local.toCurrency
+import com.veygard.currencywizard.data.local.toCurrencyList
+import com.veygard.currencywizard.domain.model.Currency
 import javax.inject.Inject
 
 class LocalCurrenciesRepositoryImpl @Inject constructor(private val currenciesDao: CurrenciesDao) :
@@ -22,15 +25,15 @@ class LocalCurrenciesRepositoryImpl @Inject constructor(private val currenciesDa
         descriptionName = descriptionName
     )
 
-    override suspend fun getAllCurrencies(): List<CurrencyEntity> =
-        currenciesDao.getAllCurrenciesDao()
+    override suspend fun getAllCurrencies(): List<Currency> =
+        currenciesDao.getAllCurrenciesDao().toCurrencyList()
 
-    override suspend fun getCurrencyByDescription(descriptionName: String): CurrencyEntity? =
-        currenciesDao.getCurrencyByDescription(descriptionName)
+    override suspend fun getCurrencyByDescription(descriptionName: String): Currency? =
+        currenciesDao.getCurrencyByDescription(descriptionName)?.toCurrency()
 
-    override suspend fun geCurrencyByAbbreviation(abbreviation: String): CurrencyEntity? =
-        currenciesDao.geCurrencyByAbbreviation(abbreviation)
+    override suspend fun geCurrencyByAbbreviation(abbreviation: String): Currency? =
+        currenciesDao.geCurrencyByAbbreviation(abbreviation)?.toCurrency()
 
-    override suspend fun getFavoriteCurrencies(isFavorite: Boolean): List<CurrencyEntity>? =
-        currenciesDao.getFavoriteCurrencies(isFavorite)
+    override suspend fun getFavoriteCurrencies(isFavorite: Boolean): List<Currency>? =
+        currenciesDao.getFavoriteCurrencies(isFavorite)?.toCurrencyList()
 }

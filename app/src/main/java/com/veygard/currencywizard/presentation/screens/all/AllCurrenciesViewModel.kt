@@ -7,6 +7,7 @@ import com.veygard.currencywizard.data.local.CurrencyEntity
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_DEFAULT_CURRENCY
 import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesRepository
+import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.domain.network.response.CurrenciesConvertRepoResponse
 import com.veygard.currencywizard.domain.network.response.CurrenciesFetchRepoResponse
 import com.veygard.currencywizard.domain.network.usecase.CurrenciesUseCases
@@ -27,8 +28,8 @@ class AllCurrenciesViewModel @Inject constructor(
     private val _stateFlow = MutableStateFlow<AllCurrenciesState?>(null)
     val stateFlow: StateFlow<AllCurrenciesState?> = _stateFlow
 
-    private val _totalList = MutableStateFlow<List<CurrencyEntity>?>(null)
-    val totalList: StateFlow<List<CurrencyEntity>?> = _totalList
+    private val _totalList = MutableStateFlow<List<Currency>?>(null)
+    val totalList: StateFlow<List<Currency>?> = _totalList
 
     init {
         getLocalCurrenciesList()

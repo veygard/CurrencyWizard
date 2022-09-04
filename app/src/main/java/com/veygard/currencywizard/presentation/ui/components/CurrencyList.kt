@@ -16,16 +16,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.veygard.currencywizard.R
-import com.veygard.currencywizard.domain.model.CurrencyStuffed
+import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.presentation.ui.*
 
 @Composable
 fun CurrencyListCompose(
-    currencies: List<CurrencyStuffed>,
+    currencies: List<Currency>,
     onFavoriteClick: (String, Boolean) -> Unit,
 ) {
     LazyColumn(
@@ -42,7 +43,7 @@ fun CurrencyListCompose(
 }
 
 @Composable
-private fun CurrencyItem(currency: CurrencyStuffed, onFavoriteClick: (String, Boolean) -> Unit) {
+private fun CurrencyItem(currency: Currency, onFavoriteClick: (String, Boolean) -> Unit) {
 
     val favoriteState = remember { mutableStateOf(currency.isFavorite) }
 
@@ -84,7 +85,7 @@ private fun CurrencyItem(currency: CurrencyStuffed, onFavoriteClick: (String, Bo
             }
             SpacingHorizontal(WidthDp = 8)
             Text(
-                text = currency.value,
+                text = currency.value ?: stringResource(id = R.string.no_info),
                 style = Paragraph_16_longread,
                 color = MaterialTheme.colors.onBackground,
                 modifier = Modifier.weight(1f)
