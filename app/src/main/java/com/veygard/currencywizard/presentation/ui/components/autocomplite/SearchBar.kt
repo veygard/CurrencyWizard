@@ -1,5 +1,7 @@
 package com.veygard.currencywizard.presentation.ui.components.autocomplite
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -15,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -94,15 +97,32 @@ fun SearchBarWithAutoComplete(
                 keyboardType = KeyboardType.Text
             )
         )
-        if (openState.value) {
-            SpacingVertical(heightDp = 4)
+        SpacingVertical(heightDp = 8)
+        AnimatedVisibility(
+            visible = openState.value,
+            enter = fadeIn(animationSpec = tween(500)) +
+                    expandVertically(
+                        animationSpec = tween(
+                            500,
+                        )
+                    ),
+            exit = fadeOut(animationSpec = tween(500)) +
+                    shrinkVertically(
+                        animationSpec = tween(
+                            500,
+                        )
+                    )
+        ) {
             LazyColumn(
+                contentPadding = PaddingValues(vertical = 24.dp),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .shadow(
+                        elevation = 8.dp,
+                        shape = buttonShapes.large
+                    )
                     .clip(buttonShapes.large)
-                    .padding(start = Margin.horizontalStandard, end = Margin.horizontalStandard)
-                    .background(MaterialTheme.colors.onSecondary),
-                contentPadding = PaddingValues(vertical = 24.dp)
+                    .background(MaterialTheme.colors.onSecondary)
             ) {
                 items(autoCompileList.value.size, itemContent = { index ->
                     SearchItem(

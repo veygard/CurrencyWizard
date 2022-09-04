@@ -34,6 +34,7 @@ class AllCurrenciesViewModel @Inject constructor(
 
     init {
         getLocalCurrenciesList()
+        loadPickedCurrency()
     }
 
     private fun getLocalCurrenciesList() {
@@ -47,17 +48,16 @@ class AllCurrenciesViewModel @Inject constructor(
         }
     }
 
-    fun fetchAll(currency: String? = null) {
+    fun updatePickedCurrency(currency: String){
+        storePickedCurrency(currency)
+        _pickedCurrency.update { currency }
+    }
+
+    fun fetchAll() {
         viewModelScope.launch {
             _stateFlow.update { AllCurrenciesState.Loading }
 
-            val fromCurrency = currency?.let {
-                savePickedCurrency(it)
-                it
-            } ?: run{
-                loadPickedCurrency()
-                _pickedCurrency.value
-            }
+            val fromCurrency = loadPickedCurrency()
 
             val result = currenciesUseCases.fetchAllUseCase.execute(
                 fromCurrency ?: SHARED_PREFERENCES_DEFAULT_CURRENCY
@@ -100,16 +100,12 @@ class AllCurrenciesViewModel @Inject constructor(
 //        }
 //    }
 
-    fun savePickedCurrency(currency: String) {
+    private fun storePickedCurrency(currency: String) {
         sharedPreferences.edit().putString(SHARED_PREFERENCES_CURRENCY, currency).apply()
     }
 
-    fun loadPickedCurrency() {
-        _pickedCurrency.update {
-            sharedPreferences.getString(
-                SHARED_PREFERENCES_CURRENCY,
-                SHARED_PREFERENCES_DEFAULT_CURRENCY
-            )
-        }
-    }
+    private fun loadPickedCurrency() = sharedPreferences.getString(
+        SHARED_PREFERENCES_CURRENCY,
+        SHARED_PREFERENCES_DEFAULT_CURRENCY
+    )
 }
