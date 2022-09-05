@@ -75,7 +75,7 @@ private fun CurrencyItem(
                     error = painterResource(R.drawable.ic_baseline_outlined_flag_24),
                 )
                 SpacingHorizontal(WidthDp = 12)
-                Column() {
+                Column {
                     Text(
                         text = currency.abbreviation,
                         style = Paragraph_16_Medium,
@@ -92,7 +92,7 @@ private fun CurrencyItem(
             SpacingHorizontal(WidthDp = 8)
             Text(
                 text = currency.value ?: stringResource(id = R.string.no_info),
-                style = Paragraph_16_longread,
+                style = Paragraph_16_longed,
                 color = MaterialTheme.colors.onBackground,
                 modifier = Modifier.weight(1f)
             )

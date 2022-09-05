@@ -6,8 +6,8 @@ import com.veygard.currencywizard.data.network.api.CurrenciesConvertApi
 import com.veygard.currencywizard.data.network.api.CurrenciesFetchApi
 import com.veygard.currencywizard.data.network.api.CurrenciesGetAllApi
 import com.veygard.currencywizard.data.network.model.currencies.CurrencyApi
-import com.veygard.currencywizard.data.network.model.currencies.toEntityList
 import com.veygard.currencywizard.data.network.model.currencies.toCurrency
+import com.veygard.currencywizard.data.network.model.currencies.toEntityList
 import com.veygard.currencywizard.domain.local.repository.LocalCurrenciesRepository
 import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.domain.network.response.CurrenciesConvertRepoResponse
@@ -113,7 +113,7 @@ class CurrenciesRepositoryImpl(
                 try {
                     stuffedList.add(
                         currency.toCurrency(
-                            value = currency.value.round() ?: return null,
+                            value = currency.value.round(),
                             isFavorite = isFavorite ?: return null,
                             flagId = flag,
                             descriptionName = description ?: return null
@@ -136,7 +136,7 @@ class CurrenciesRepositoryImpl(
         favorites: List<Currency>?
     ) {
         networkList?.forEach {
-            it.flagId = FlagKit.getResId(context, it.name.substring(0,2) ?: return)
+            it.flagId = FlagKit.getResId(context, it.name.substring(0,2))
         }
         favorites?.forEach { entity ->
             val currency = networkList?.singleOrNull { it.name == entity.abbreviation }

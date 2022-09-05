@@ -1,7 +1,6 @@
 package com.veygard.currencywizard.presentation.screens.favorite
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY
@@ -16,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -96,8 +94,8 @@ class FavoriteCurrenciesViewModel @Inject constructor(
             val fromCurrency = loadPickedCurrency()
 
             val favoriteList =
-                localCurrenciesRepository.getFavoriteCurrencies(true)?.map { it.abbreviation }
-                    ?.joinToString(separator = ",")
+                localCurrenciesRepository.getFavoriteCurrencies(true)
+                    ?.joinToString(separator = ",") { it.abbreviation }
 
             if (favoriteList.isNullOrEmpty()) {
                 _stateFlow.update { FavoriteCurrenciesState.FavoritesEmpty }

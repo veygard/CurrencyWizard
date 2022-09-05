@@ -9,9 +9,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-const val SHARED_PREFERENCES_NAME = "wizzPref"
-const val SHARED_PREFERENCES_CURRENCY = "wizzPrefCurrency"
-const val SHARED_PREFERENCES_CURRENCY_CONVERT = "wizzConvertPrefCurrency"
+const val SHARED_PREFERENCES_NAME = "wizPref"
+const val SHARED_PREFERENCES_CURRENCY = "wizPrefCurrency"
+const val SHARED_PREFERENCES_CURRENCY_CONVERT = "wizConvertPrefCurrency"
 const val SHARED_PREFERENCES_DEFAULT_CURRENCY = "USD"
 @Module
 @InstallIn(SingletonComponent::class)

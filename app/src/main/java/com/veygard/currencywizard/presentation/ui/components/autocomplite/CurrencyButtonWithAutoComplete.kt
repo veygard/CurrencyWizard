@@ -1,12 +1,13 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package com.veygard.currencywizard.presentation.ui.components.autocomplite
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,7 @@ fun CurrencyButtonWithAutoComplete(
 ) {
     val showSearchBarState = remember { mutableStateOf(false) }
     Row(modifier = modifier) {
-        Column() {
+        Column {
             AnimatedVisibility(
                 visible = showSearchBarState.value,
                 enter = fadeIn(animationSpec = tween(500)) +

@@ -23,7 +23,9 @@ import com.veygard.currencywizard.presentation.navigation.BottomBarScreen
 import com.veygard.currencywizard.presentation.navigation.provideBottomBarScreenList
 import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.screens.destinations.StartScreenDestination
-import com.veygard.currencywizard.presentation.ui.*
+import com.veygard.currencywizard.presentation.ui.H_L5
+import com.veygard.currencywizard.presentation.ui.Margin
+import com.veygard.currencywizard.presentation.ui.SpacingVertical
 import com.veygard.currencywizard.presentation.ui.components.BottomBar
 import com.veygard.currencywizard.presentation.ui.components.currencylist.CurrencyListCompose
 import com.veygard.currencywizard.presentation.ui.components.currencylist.CurrencyTopBarContent
@@ -160,7 +162,10 @@ private fun AllCurrenciesScreenContent(
                             contentAlignment = Alignment.Center
                         ) { CircularProgressIndicator() }
                         is AllCurrenciesState.CurrencyListReady -> {
-                            Text(text = stringResource(id = R.string.currencies_list_title), style = H_L5)
+                            Text(
+                                text = stringResource(id = R.string.currencies_list_title),
+                                style = H_L5
+                            )
                             CurrencyListCompose(
                                 currencies = (screenState.value as AllCurrenciesState.CurrencyListReady).list,
                                 onFavoriteClick = onFavoriteClick

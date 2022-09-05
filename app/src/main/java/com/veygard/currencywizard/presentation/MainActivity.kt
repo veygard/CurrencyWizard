@@ -1,11 +1,8 @@
-@file:OptIn(ExperimentalMaterialApi::class)
-
 package com.veygard.currencywizard.presentation
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.navigation.compose.rememberNavController
 import com.veygard.currencywizard.presentation.navigation.AppNavigation
 import com.veygard.currencywizard.presentation.ui.AppTheme

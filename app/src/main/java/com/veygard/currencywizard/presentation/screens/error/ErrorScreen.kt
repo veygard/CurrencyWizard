@@ -2,7 +2,6 @@ package com.veygard.currencywizard.presentation.screens.error
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -15,13 +14,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.veygard.currencywizard.R
+import com.veygard.currencywizard.presentation.screens.destinations.AllCurrenciesScreenDestination
 import com.veygard.currencywizard.presentation.ui.H_L3
 import com.veygard.currencywizard.presentation.ui.Margin
 import com.veygard.currencywizard.presentation.ui.Paragraph_16_Medium
 import com.veygard.currencywizard.presentation.ui.SpacingVertical
 import com.veygard.currencywizard.presentation.ui.components.CommonButton
-import com.veygard.currencywizard.R
-import com.veygard.currencywizard.presentation.screens.destinations.AllCurrenciesScreenDestination
 
 @Composable
 @Destination

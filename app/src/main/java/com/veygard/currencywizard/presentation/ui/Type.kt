@@ -85,7 +85,7 @@ val H_L3 = TextStyle(
     textAlign = TextAlign.Start,
 )
 
-val Paragraph_16_longread = TextStyle(
+val Paragraph_16_longed = TextStyle(
     fontFamily = FontFamily.Default,
     fontSize = 16.sp,
     fontWeight = FontWeight.W800,

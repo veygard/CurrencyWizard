@@ -3,7 +3,6 @@ package com.veygard.currencywizard.presentation.screens.convert
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide.init
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY_CONVERT
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_DEFAULT_CURRENCY
@@ -75,6 +74,7 @@ class ConvertCurrenciesViewModel @Inject constructor(
                         )
                     }
                 }
+                CurrenciesConvertRepoResponse.Error -> _stateFlow.update { ConvertCurrenciesState.ConnectionError }
                 else -> _stateFlow.update { ConvertCurrenciesState.ConnectionError }
             }
         }

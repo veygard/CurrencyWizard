@@ -1,7 +1,6 @@
 package com.veygard.currencywizard.presentation.screens.all
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.veygard.currencywizard.di.SHARED_PREFERENCES_CURRENCY

@@ -4,7 +4,6 @@ import com.ramcosta.composedestinations.spec.Direction
 import com.veygard.currencywizard.R
 import com.veygard.currencywizard.presentation.screens.destinations.AllCurrenciesScreenDestination
 import com.veygard.currencywizard.presentation.screens.destinations.ConvertCurrenciesScreenDestination
-import com.veygard.currencywizard.presentation.screens.destinations.ErrorScreenDestination
 import com.veygard.currencywizard.presentation.screens.destinations.FavoriteCurrenciesScreenDestination
 
 sealed class BottomBarScreen(

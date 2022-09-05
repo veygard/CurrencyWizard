@@ -1,6 +1,5 @@
 package com.veygard.currencywizard.presentation.navigation
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.ramcosta.composedestinations.DestinationsNavHost
