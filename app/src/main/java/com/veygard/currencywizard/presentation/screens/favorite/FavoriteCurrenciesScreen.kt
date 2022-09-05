@@ -173,6 +173,7 @@ private fun FavoriteCurrenciesScreenContent(
                             )
                             CurrencyListCompose(
                                 currencies = (screenState.value as FavoriteCurrenciesState.CurrencyListReady).list,
+                                triggerFavoriteIconImageState = false,
                                 onFavoriteClick = onFavoriteClick
                             )
                         }

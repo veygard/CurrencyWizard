@@ -27,6 +27,7 @@ import com.veygard.currencywizard.presentation.ui.*
 @Composable
 fun CurrencyListCompose(
     currencies: List<Currency>,
+    triggerFavoriteIconImageState: Boolean = true,
     onFavoriteClick: (String, Boolean) -> Unit,
 ) {
     LazyColumn(
@@ -37,14 +38,18 @@ fun CurrencyListCompose(
         contentPadding = PaddingValues(vertical = 24.dp)
     ) {
         items(currencies.size, itemContent = { index ->
-            CurrencyItem(currency = currencies[index], onFavoriteClick)
+            CurrencyItem(currency = currencies[index], onFavoriteClick, triggerFavoriteIconImageState)
             SpacingVertical(heightDp = 16)
         })
     }
 }
 
 @Composable
-private fun CurrencyItem(currency: Currency, onFavoriteClick: (String, Boolean) -> Unit) {
+private fun CurrencyItem(
+    currency: Currency,
+    onFavoriteClick: (String, Boolean) -> Unit,
+    triggerFavoriteIconImageState: Boolean
+) {
 
     val favoriteState = remember { mutableStateOf(currency.isFavorite) }
 
@@ -106,12 +111,17 @@ private fun CurrencyItem(currency: Currency, onFavoriteClick: (String, Boolean) 
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable {
-                            onFavoriteClick(currency.abbreviation, !favoriteState.value)
+                            if(triggerFavoriteIconImageState) {
+                                favoriteState.value = !favoriteState.value
+                                onFavoriteClick(currency.abbreviation, favoriteState.value)
+                            } else{
+                                onFavoriteClick(currency.abbreviation, !favoriteState.value)
+                            }
+
                         }
                         .size(36.dp),
                     error = painterResource(R.drawable.ic_baseline_star_border_24),
                 )
-
             }
         }
     }
