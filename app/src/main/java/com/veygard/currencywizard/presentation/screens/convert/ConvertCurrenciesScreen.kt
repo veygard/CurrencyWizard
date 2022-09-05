@@ -1,6 +1,7 @@
 package com.veygard.currencywizard.presentation.screens.convert
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -11,8 +12,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -48,7 +52,7 @@ fun ConvertCurrenciesScreen(
         viewModel.updateConvertToCurrency(currency)
     }
     val onConvertClick: () -> Unit = {
-        if (amountConvert.value.toDoubleOrNull() == null) amountError.value = true
+        if (!amountConvert.value.isDigitsOnly()) amountError.value = true
         else viewModel.convert(amountConvert.value.toDouble())
     }
 
@@ -254,7 +258,7 @@ private fun ConvertCurrenciesScreenContent(
                     isError = amountError.value,
                     value = amountConvert.value,
                     onValueChange = { query ->
-                        if (query.toDoubleOrNull() != null) {
+                        if (query.isDigitsOnly()) {
                             amountError.value = false
                             amountConvert.value = query
                         } else {
@@ -263,6 +267,10 @@ private fun ConvertCurrenciesScreenContent(
                     },
                     textStyle = Paragraph_16,
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.NumberPassword
+                    )
                 )
             }
             SpacingVertical(heightDp = 16)
