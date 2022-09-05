@@ -1,14 +1,12 @@
 package com.veygard.currencywizard.presentation.screens.convert
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -113,8 +111,10 @@ fun ConvertCompleteContent(
             )
             SpacingVertical(heightDp = 24)
 
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(
                     modifier = Modifier.width(120.dp),
                     text = results.amount.toString() + " " + results.from
@@ -139,7 +139,7 @@ fun ConvertCompleteContent(
                 )
             }
             SpacingVertical(heightDp = 8)
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(R.drawable.exchange)
@@ -154,8 +154,10 @@ fun ConvertCompleteContent(
                 )
             }
             SpacingVertical(heightDp = 8)
-            Row(verticalAlignment = Alignment.CenterVertically,  modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Text(
                     modifier = Modifier.width(120.dp),
                     text = results.exchangeValue.toString() + " " + results.to

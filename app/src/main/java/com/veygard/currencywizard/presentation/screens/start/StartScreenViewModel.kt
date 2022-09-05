@@ -24,7 +24,7 @@ class StartScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _stateFlow.update { StartScreenState.Loading }
             val result = currenciesUseCases.getAllCurrenciesUseCase.execute()
-            delay(1500) //showing lottie animation
+            delay(1500) //demonstration purpose
             when (result) {
                 is CurrenciesGetAllRepoResponse.SuccessGetAll -> {
                     _stateFlow.update {

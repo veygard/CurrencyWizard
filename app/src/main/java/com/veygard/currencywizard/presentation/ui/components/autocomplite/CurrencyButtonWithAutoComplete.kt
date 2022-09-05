@@ -19,7 +19,7 @@ import com.veygard.currencywizard.presentation.ui.Margin
 
 @Composable
 fun CurrencyButtonWithAutoComplete(
-    modifier: Modifier= Modifier,
+    modifier: Modifier = Modifier,
     totalList: List<Currency>?,
     onCurrencyClick: (String) -> Unit,
     pickedCurrency: State<String?>,
@@ -68,7 +68,10 @@ fun CurrencyButtonWithAutoComplete(
                             disabledElevation = 2.dp
                         ),
                         border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.primary)
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colors.primary,
+                            backgroundColor = MaterialTheme.colors.primaryVariant
+                        )
                     ) {
                         Text(
                             text = pickedCurrency.value ?: "USD",

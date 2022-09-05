@@ -2,7 +2,6 @@
 
 package com.veygard.currencywizard.presentation.ui.components.currencylist
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -19,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.veygard.currencywizard.R
 import com.veygard.currencywizard.domain.model.Currency
 import com.veygard.currencywizard.presentation.model.SortingOrder
-import com.veygard.currencywizard.presentation.ui.Margin
 import com.veygard.currencywizard.presentation.ui.SpacingHorizontal
 import com.veygard.currencywizard.presentation.ui.components.autocomplite.SearchBarWithAutoComplete
 import kotlinx.coroutines.CoroutineScope
@@ -77,7 +75,10 @@ fun CurrencyTopBarContent(
                         disabledElevation = 2.dp
                     ),
                     border = BorderStroke(1.dp, MaterialTheme.colors.primary),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colors.primary)
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colors.primary,
+                        backgroundColor = MaterialTheme.colors.primaryVariant
+                    )
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
