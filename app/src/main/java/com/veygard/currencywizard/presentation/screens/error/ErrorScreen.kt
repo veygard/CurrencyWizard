@@ -1,5 +1,8 @@
 package com.veygard.currencywizard.presentation.screens.error
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -8,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +31,8 @@ import com.veygard.currencywizard.presentation.ui.components.CommonButton
 fun ErrorScreen(
     navigator: DestinationsNavigator,
 ) {
+    val context = LocalContext.current
+    val connectionError = stringResource(id = R.string.timeout_toast)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -61,8 +67,21 @@ fun ErrorScreen(
             )
             SpacingVertical(24.0)
             CommonButton(label = stringResource(id = R.string.try_again)) {
-                navigator.navigate(AllCurrenciesScreenDestination)
+                if (isInternetAvailable(context)) navigator.navigate(AllCurrenciesScreenDestination)
+                else  Toast.makeText(context, connectionError, Toast.LENGTH_LONG).show()
             }
         }
     }
+}
+
+private fun isInternetAvailable(context: Context): Boolean {
+    var status = false
+    context.let {
+        val cm =
+            it.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (cm.activeNetwork != null && cm.getNetworkCapabilities(cm.activeNetwork) != null) {
+            status = true
+        }
+    }
+    return status
 }

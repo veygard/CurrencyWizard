@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">CurrencyWizard</string>
     <string name="something_wrong_title">Something wrong</string>
-    <string name="timeout_title">Connection error</string>
+    <string name="timeout_title">Something wrong</string>
+    <string name="timeout_toast">No Internet connection</string>
     <string name="something_wrong_text">Try again later</string>
+
     <string name="starting">We are starting</string>
     <string name="no_info">No info</string>
     <string name="try_again">Try it again</string>
