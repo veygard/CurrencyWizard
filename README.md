@@ -10,7 +10,7 @@ Android app for currency exchange information:
 Clean architecture. MVVM. UI made by Jetpack Compose.
 Stack: Kotlin, hilt, retrofit+okhttp, jetpack compose, room database, sqlite, lottie animation.
 
-Important note: the api key expires after 7 days of trial. There may be a need to create accaunt on https://www.fastforex.io 
+Important note: the api key expires after 7 days of trial. There may be a need to create account on https://www.fastforex.io 
 and set new Api_key in Constants(package com.veygard.currencywizard.util)
 
 
